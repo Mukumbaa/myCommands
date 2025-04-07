@@ -1,24 +1,102 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <process.h>
+#include <string.h>
+
+void execCommand(int eOk, int edOk, char *file1, char *file2){
+
+  // char file2Ext[64] = "";
+  char command[256];
+  int result;
+  
+  // .asm
+  // sprintf(file2Ext, "%s.asm", file2);
+  sprintf(command, "gcc -S -fno-asynchronous-unwind-tables %s -o %s.asm -masm=intel", file1, file2);
+  if (system(command) != 0) {
+      perror("Error in .asm");
+      return;
+  }
+
+  if (eOk) {
+    
+    // binary
+    sprintf(command, "gcc %s -o %s.exe", file1, file2);
+    if (system(command) != 0) {
+        perror("error in .exe");
+        return;
+    }
+
+    // disassembly
+    // memset(file2Ext,0,sizeof(file2Ext));
+    // sprintf(file2Ext, "%s.txt", file2);
+
+    #ifdef _WIN32
+      // Windows
+      sprintf(command, "objdump -d -M intel %s.exe > %s.txt", file2, file2);
+    #else
+      // Unix
+      sprintf(command, "objdump -d -M intel %s > %s.txt", file2, file2);
+    #endif
+
+    if (system(command) != 0) {
+        perror("Error in .txt");
+        return;
+    }  
+    if (edOk){
+      sprintf(command, "del %s.exe", file2);
+      if (system(command) != 0){
+        perror("Error in edOk");
+        return;
+      }
+    }
+
+  }
+
+  return;
+}
 
 int main(int argc, char **argv){
-
-  // printf("%d",argc);
-  char *fileName = NULL;
-  char *outputFileName = NULL;
+  int eOk = 0;
+  int edOk = 0;
+  char *file1 = NULL;
+  char *file2 = NULL;
   
-  if(argc > 1 && argc <= 3){
-    fileName = argv[1];
-  }else{
-    printf("Too few or too many arg");
-    return 0;
+  if (argc < 2){
+    fprintf(stderr,"Usage: c2asm [-e] file1 [file2]\n");
+    return 1;
   }
-  if(argc == 3){
-    outputFileName = argv[2];
-    _execlp("gcc", "gcc", "-S", "-fno-asynchronous-unwind-tables", fileName, "-o", outputFileName, "-masm=intel", (char *)NULL, (char *)NULL);  
-  }else{
-    _execlp("gcc", "gcc", "-S", "-fno-asynchronous-unwind-tables", fileName, "-o", "output.asm", "-masm=intel", (char *)NULL);  
+
+  int argIndex = 1;
+
+  // Checking if -e flag is given
+  if (strcmp(argv[argIndex],"-e") == 0){
+    eOk = 1;
+    argIndex++;
+  }else if (strcmp(argv[argIndex],"-ed") == 0){
+    eOk = 1;
+    edOk = 1;
+    argIndex++;
   }
-  return 0;
+
+  if (argc - argIndex < 1 || argc - argIndex > 2){
+    fprintf(stderr,"Incorrect number of files\n");
+    fprintf(stderr,"Usage: c2asm [-e] file1 [file2]\n");
+    return 1;
+  }
+
+  // Taking file names
+  file1 = argv[argIndex];
+  if (argc - argIndex == 2){
+    if (strstr(argv[argIndex+1],".")){
+      fprintf(stderr, "Name of second file needs to be given without the extension\n");
+      fprintf(stderr,"Usage: c2asm [-e] file1 [file2]\n");
+      return 1;
+    }else{
+      file2 = argv[argIndex+1];
+    }
+  }else{
+    file2 = "output";
+  }
+
+  execCommand(eOk, edOk, file1, file2);
 }
