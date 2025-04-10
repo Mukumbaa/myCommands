@@ -2,6 +2,17 @@
 #include <sys/stat.h>   // Per stat()
 #include <string.h>     // Per strcmp()
 #include "libs/dirent.h"
+#include <time.h>
+
+#ifdef _WIN32
+#include <windows.h>
+#define CLEAR_SCREEN() system("cls")
+#define SLEEP_SECONDS(sec) Sleep((sec) * 1000)
+#else
+#include <unistd.h>
+#define CLEAR_SCREEN() system("clear")
+#define SLEEP_SECONDS(sec) sleep(sec)
+#endif
 
 #define MAX_PATH_LEN 1024
 
@@ -59,6 +70,10 @@ int fileTreeRec(const char *base_path, int depth) {
 }
 
 int main() {
-    fileTreeRec(".", 0);
+    while (1) {
+        CLEAR_SCREEN();
+        fileTreeRec(".", 0);
+        SLEEP_SECONDS(2);
+    }
     return 0;
 }
