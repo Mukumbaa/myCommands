@@ -7,6 +7,11 @@
 
 #define MAX_PATH_LEN 1024
 
+// #define SYMB1 '└'└─├│
+// #define SYMB2 '─'
+// #define SYMB3 '├'
+// #define SYMB4 '│'
+
 void list_files_recursively(const char *base_path, int depth) {
     DIR *dir;
     struct dirent *entry;
@@ -20,7 +25,8 @@ void list_files_recursively(const char *base_path, int depth) {
 
     while ((entry = readdir(dir)) != NULL) {
         // Salta "." e ".."
-        if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0)
+        // if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0)
+        if (entry->d_name[0] == '.')
             continue;
 
         // Costruisce il percorso completo (usa / o \ a seconda del sistema)
@@ -50,7 +56,7 @@ void list_files_recursively(const char *base_path, int depth) {
 }
 
 int main() {
-    // printf("Struttura della directory corrente:\n");
+        printf("%c\n", (unsigned char)195);
     list_files_recursively(".", 0);  // Parte dalla directory corrente
     return 0;
 }
