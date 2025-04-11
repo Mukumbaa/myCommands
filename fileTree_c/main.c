@@ -35,7 +35,7 @@ int fileTreeRec(const char *base_path, int depth) {
             continue;
         }
 
-        // Costruisce il percorso completo (usa / o \ a seconda del sistema)
+        // build path
         snprintf(path, sizeof(path), "%s/%s", base_path, entry->d_name);
 
         if (stat(path, &statbuf) == -1) {
@@ -56,11 +56,11 @@ int fileTreeRec(const char *base_path, int depth) {
         }
 
         if (S_ISDIR(statbuf.st_mode)) {
-            // È una directory
+            // is a dir
             printf("%s/\n", entry->d_name);
             int isEmpty = fileTreeRec(path, depth + 1) > 0 ? 0 : 1;
         } else {
-            // È un file
+            // is a file
             printf("%s\n", entry->d_name);
         }
         numOfFiles++;
@@ -69,11 +69,33 @@ int fileTreeRec(const char *base_path, int depth) {
     return numOfFiles;
 }
 
-int main() {
-    while (1) {
-        CLEAR_SCREEN();
-        fileTreeRec(".", 0);
-        SLEEP_SECONDS(2);
+int main(int argc, char **argv) {
+
+    argc = argc - 1;
+    int flagDynamic = 0;
+
+    if(argc == 1){
+        if(strcmp(argv[1],"-d") == 0){
+            flagDynamic = 1;
+        }
+    }else if(argc > 1){
+        printf("Too many arguments\nUsage: ftree [-d]\n");
+        return 0;
     }
+    // printf("%d\n", flagDynamic);
+
+    if(flagDynamic){
+        
+        while (1) {
+            CLEAR_SCREEN();
+            fileTreeRec(".", 0);
+            SLEEP_SECONDS(2);
+        }
+    }else{
+        printf("\n");
+        fileTreeRec(".", 0);
+        printf("\n");
+    }
+    
     return 0;
 }
