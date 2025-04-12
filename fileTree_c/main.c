@@ -16,16 +16,15 @@
 
 #define MAX_PATH_LEN 1024
 
-int fileTreeRec(const char *base_path, int depth) {
+void fileTreeRec(const char *base_path, int depth) {
     DIR *dir;
     struct dirent *entry;
     struct stat statbuf;
     char path[MAX_PATH_LEN];
-    int numOfFiles = 0;
 
     if ((dir = opendir(base_path)) == NULL) {
         perror("opendir");
-        return -1;
+        return;
     }
     
     while ((entry = readdir(dir)) != NULL) {
@@ -58,15 +57,14 @@ int fileTreeRec(const char *base_path, int depth) {
         if (S_ISDIR(statbuf.st_mode)) {
             // is a dir
             printf("%s/\n", entry->d_name);
-            int isEmpty = fileTreeRec(path, depth + 1) > 0 ? 0 : 1;
+            fileTreeRec(path, depth + 1);
         } else {
             // is a file
             printf("%s\n", entry->d_name);
         }
-        numOfFiles++;
     }
     closedir(dir);
-    return numOfFiles;
+    return;
 }
 
 int main(int argc, char **argv) {
