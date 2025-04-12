@@ -7,7 +7,6 @@ static inline void execCommand(int eOk, int edOk, char *file1, char *file2){
 
   // char file2Ext[64] = "";
   char command[256];
-  int result;
   
   // .asm
   // sprintf(file2Ext, "%s.asm", file2);
@@ -51,7 +50,6 @@ static inline void execCommand(int eOk, int edOk, char *file1, char *file2){
     }
 
   }
-
   return;
 }
 

@@ -101,17 +101,14 @@ int main(int argc, char **argv){
   switch (fOutput) {
     case notGiven:
       fOutput = hFlag;
-      int32_t num;
-      num = (int32_t)strtoll(input, NULL, 0);
-      
       for(int i = 0; input[i] != '\0'; i++){
         if(isalpha((unsigned char)input[i])){
           fOutput = dFlag;
           break;
         }
       }
-      
-      // return printResult(fOutput, flag64, input);
+      return printResult(fOutput, flag64, input);
+      break;
     default:
       return printResult(fOutput, flag64, input);
       break;

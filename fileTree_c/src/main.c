@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <sys/stat.h>   // Per stat()
 #include <string.h>     // Per strcmp()
-#include "libs/dirent.h"
+#include "../include/dirent.h"
 #include <time.h>
 
 #ifdef _WIN32
