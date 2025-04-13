@@ -54,16 +54,29 @@ bool checkInput(char input[64]) {
   if(input[start] == '-'){
     start++;
   }
+  bool has_letter = false;
+  
+  
   for (int i = start; input[i] != '\0'; i++) {
       char c = input[i];
 
       // Controllo caratteri ammessi: 0-9, a-f, A-F
-      bool is_hex_digit = (isdigit(c) || (tolower(c) >= 'a' && tolower(c) <= 'f'));
-      bool is_allowed_x = (i == 1 && tolower(c) == 'x' && input[0] == '0');
+      bool is_digit = isdigit(c);
+      bool is_hex_letter = (tolower(c) >= 'a' && tolower(c) <= 'f');
 
-      if (!is_hex_digit && !is_allowed_x) {
+      if(is_hex_letter == false && i == 1){
+        if((c == 'x' || c == 'X') && input[0] == '0'){
+          is_hex_letter = true;
+        }
+      }
+      
+      if (!is_digit && !is_hex_letter) {
           return false;  // Carattere non valido
       }
+      has_letter = has_letter || is_hex_letter;
+  }
+  if(has_letter && input[0] != '0' && (input[1] != 'x' || input[1] != 'X')){
+    return false;
   }
   return true;  // Stringa valida
 }
@@ -107,6 +120,7 @@ int main(int argc, char **argv){
           break;
         }
       }
+      
       return printResult(fOutput, flag64, input);
       break;
     default:
