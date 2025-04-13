@@ -75,8 +75,10 @@ bool checkInput(char input[64]) {
       }
       has_letter = has_letter || is_hex_letter;
   }
-  if(has_letter && input[0] != '0' && (input[1] != 'x' || input[1] != 'X')){
-    return false;
+  // printf("%d\n",has_letter);
+  // printf("%d %d\n",input[0] == '0', tolower(input[1]) == 'x');
+  if(has_letter && !(input[0] == '0' && tolower(input[1]) == 'x')){
+      return false;
   }
   return true;  // Stringa valida
 }
