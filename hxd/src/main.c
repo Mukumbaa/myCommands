@@ -6,40 +6,39 @@
 #include <ctype.h>
 #include <inttypes.h>
 
-typedef enum bool{
+typedef enum {
   true = 1,
   false = 0,
 }bool;
 
-typedef enum flagOutput{
+typedef enum {
   notGiven = 0,
   dFlag = 1,
   hFlag = 2,
 }flagOutput;
 
 int printResult(flagOutput fOutput, bool flag64, char input[64]){
+  
+  int32_t num = (int32_t)strtoll(input, NULL, 0);
+  
   switch (fOutput) {
     case dFlag:
-      if(!flag64){
-        int32_t num;
-        num = (int32_t)strtoll(input, NULL, 0);
-        printf("%" PRId32 "\n",num);
-      }else{
-        int64_t num;
-        num = (int64_t)strtoll(input, NULL, 0);
-        printf("%" PRId64 "\n",num);
+      if(flag64){
+        int64_t num64;
+        num64 = (int64_t)strtoll(input, NULL, 0);
+        printf("%" PRId64 "\n",num64);
+        break;
       }
+      printf("%" PRId32 "\n",num);
       break;
     case hFlag:
-      if(!flag64){
-        int32_t num;
-        num = (int32_t)strtoll(input, NULL, 0);
-        printf("0x%" PRIx32 "\n",num);
-      }else{
-        int64_t num;
-        num = (int64_t)strtoll(input, NULL, 0);
-        printf("0x%" PRIx64 "\n",num);
+      if(flag64){
+        int64_t num64;
+        num64 = (int64_t)strtoll(input, NULL, 0);
+        printf("0x%" PRIx64 "\n",num64);
+        break;
       }
+      printf("0x%" PRIx32 "\n",num);
       break;
     default:
       printf("Bad flag -d/-h\nUsage: hxd -d/-h [-64] num\n");
@@ -60,7 +59,7 @@ bool checkInput(char input[64]) {
   for (int i = start; input[i] != '\0'; i++) {
       char c = input[i];
 
-      // Controllo caratteri ammessi: 0-9, a-f, A-F
+      // Controllo caratteri ammessi 0-9, a-f, A-F
       bool is_digit = isdigit(c);
       bool is_hex_letter = (tolower(c) >= 'a' && tolower(c) <= 'f');
 
@@ -71,16 +70,14 @@ bool checkInput(char input[64]) {
       }
       
       if (!is_digit && !is_hex_letter) {
-          return false;  // Carattere non valido
+          return false;
       }
       has_letter = has_letter || is_hex_letter;
   }
-  // printf("%d\n",has_letter);
-  // printf("%d %d\n",input[0] == '0', tolower(input[1]) == 'x');
   if(has_letter && !(input[0] == '0' && tolower(input[1]) == 'x')){
       return false;
   }
-  return true;  // Stringa valida
+  return true;
 }
 
 int main(int argc, char **argv){
@@ -122,7 +119,6 @@ int main(int argc, char **argv){
           break;
         }
       }
-      
       return printResult(fOutput, flag64, input);
       break;
     default:
