@@ -8,6 +8,10 @@
 #include <string.h>
 
 #define MINL 4
+#define LENGHT_FLAG "-l"
+#define SEARCH_SENSITIVE_FLAG "-S"
+#define SEARCH_NOSENSITIVE_FLAG "-s"
+
 
 
 int pattern_match(char *input, char *pattern, int case_sensitive){
@@ -48,19 +52,19 @@ int main(int argc, char **argv){
   int min_chars = 4;
   char input[64] = "\0";
   char search_for[1064] = "\0";
-  int search = 0;
+  int search_type = 0;
   
   for(int i = 1; i < argc; i++){
-    if(strcmp(argv[i],"-l") == 0){
+    if(strcmp(argv[i],LENGHT_FLAG) == 0){
       i++;
       min_chars = strtoll(argv[i], NULL, 0);
-    }else if(strcmp(argv[i],"-s") == 0){
-      search = 1;
+    }else if(strcmp(argv[i],SEARCH_SENSITIVE_FLAG) == 0){
+      search_type = 1;
       i++;
       strcpy(search_for, argv[i]);
     }
-    else if(strcmp(argv[i],"-S") == 0){
-      search = 2;
+    else if(strcmp(argv[i],SEARCH_NOSENSITIVE_FLAG) == 0){
+      search_type = 2;
       i++;
       strcpy(search_for, argv[i]);
     }
@@ -97,10 +101,10 @@ int main(int argc, char **argv){
       if(index >= min_chars){
         buffer[index] = '\0';
         if(buffer[0] != '.'){
-          if(search==0){
+          if(search_type==0){
             printf("0x%" PRIx64 ": %s\n",string_start,buffer);
           }else{
-            if(pattern_match(buffer, search_for, search) == 0){
+            if(pattern_match(buffer, search_for,search_type) == 0){
               printf("0x%" PRIx64 ": %s\n",string_start,buffer);
             }
           }
