@@ -67,12 +67,12 @@ int main(int argc, char **argv){
     if(strcmp(argv[i],LENGHT_FLAG) == 0){
       i++;
       min_chars = strtoll(argv[i], NULL, 0);
-    }else if(strcmp(argv[i],SEARCH_SENSITIVE_FLAG) == 0){
+    }else if(strcmp(argv[i],SEARCH_NOSENSITIVE_FLAG) == 0){
       search_type = NOSENSITIVE;
       i++;
       strcpy(search_for, argv[i]);
     }
-    else if(strcmp(argv[i],SEARCH_NOSENSITIVE_FLAG) == 0){
+    else if(strcmp(argv[i],SEARCH_SENSITIVE_FLAG) == 0){
       search_type = SENSITIVE;
       i++;
       strcpy(search_for, argv[i]);
