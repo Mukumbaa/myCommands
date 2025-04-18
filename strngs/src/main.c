@@ -11,8 +11,9 @@
 #define LENGHT_FLAG "-l"
 #define SEARCH_SENSITIVE_FLAG "-S"
 #define SEARCH_NOSENSITIVE_FLAG "-s"
-
-
+#define SENSITIVE 1
+#define NOSENSITIVE 2
+#define NOSEARCH 0
 
 int pattern_match(char *input, char *pattern, int case_sensitive){
 
@@ -21,7 +22,7 @@ int pattern_match(char *input, char *pattern, int case_sensitive){
   int index = 0;
   
   for(int i = 0; i < str_len; i++){
-    if(case_sensitive == 2 ? tolower(input[i]) == tolower(pattern[index]) : input[i] == pattern[index]) {
+    if(case_sensitive == NOSENSITIVE ? tolower(input[i]) == tolower(pattern[index]) : input[i] == pattern[index]) {
       // printf("%c %c\n", input[i],pattern[index]);
       if(index < str_len_p){
         index++;
@@ -52,19 +53,19 @@ int main(int argc, char **argv){
   int min_chars = 4;
   char input[64] = "\0";
   char search_for[1064] = "\0";
-  int search_type = 0;
+  int search_type = NOSEARCH;
   
   for(int i = 1; i < argc; i++){
     if(strcmp(argv[i],LENGHT_FLAG) == 0){
       i++;
       min_chars = strtoll(argv[i], NULL, 0);
     }else if(strcmp(argv[i],SEARCH_SENSITIVE_FLAG) == 0){
-      search_type = 1;
+      search_type = NOSENSITIVE;
       i++;
       strcpy(search_for, argv[i]);
     }
     else if(strcmp(argv[i],SEARCH_NOSENSITIVE_FLAG) == 0){
-      search_type = 2;
+      search_type = SENSITIVE;
       i++;
       strcpy(search_for, argv[i]);
     }
@@ -101,7 +102,7 @@ int main(int argc, char **argv){
       if(index >= min_chars){
         buffer[index] = '\0';
         if(buffer[0] != '.'){
-          if(search_type==0){
+          if(search_type==NOSEARCH){
             printf("0x%" PRIx64 ": %s\n",string_start,buffer);
           }else{
             if(pattern_match(buffer, search_for,search_type) == 0){
