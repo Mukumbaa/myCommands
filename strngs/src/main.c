@@ -1,7 +1,6 @@
 #include <ctype.h>
 #include <stdint.h>
 #include <stdio.h>
-// #include <stdlib.h>
 #include <ctype.h>
 #include <inttypes.h>
 #include <stdlib.h>
@@ -15,7 +14,12 @@
 #define NOSENSITIVE 2
 #define NOSEARCH 0
 
-int pattern_match(char *input, char *pattern, int case_sensitive){
+typedef enum bool{
+  false = 0,
+  true = 1,
+}bool;
+
+bool pattern_match(char *input, char *pattern, int case_sensitive){
 
   int str_len = strlen(input);
   int str_len_p = strlen(pattern);
@@ -23,33 +27,37 @@ int pattern_match(char *input, char *pattern, int case_sensitive){
   
   for(int i = 0; i < str_len; i++){
     if(case_sensitive == NOSENSITIVE ? tolower(input[i]) == tolower(pattern[index]) : input[i] == pattern[index]) {
-      // printf("%c %c\n", input[i],pattern[index]);
       if(index < str_len_p){
         index++;
       }
     }
     else if(index == str_len_p){
-      return 0;
+      return true;
     }
     else{
       index = 0;
     }
   }
   if(index == str_len_p){
-    return 0;
+    return true;
   }
-  return 1;
+  return false;
+}
+bool multi_pattern_match(char *input, char **patterns, int dim, int case_sensitive){
+
+  bool result = false;
+
+  for(int i = 0; i < dim; i++){
+    result = result || pattern_match(input, patterns[i],case_sensitive);
+  }
+  return result;
 }
 
 int main(int argc, char **argv){
-  // printf("%d\n",pattern_match("Ciao sono gabriele lippolis", "lippolis"));
-
-  // argc--;
   if(argc < 2){
     printf("Expected argument(s)");
     return -1;
   }
-  // argv++;
   int min_chars = 4;
   char input[64] = "\0";
   char search_for[1064] = "\0";
@@ -74,20 +82,39 @@ int main(int argc, char **argv){
     }
   }
 
-  FILE *file;
+  FILE *file = NULL;
   int error = fopen_s(&file,input,"rb");
   if(error != 0) {
     printf("Error opening file: %d-%s\n",error,input);
     return -1;
   }
+  
+  char **pattern = NULL;
+  int dim = 0;
+  if(search_type != NOSEARCH){
+    pattern = malloc(dim * sizeof(char*));
+    for(int i = 0; search_for[i] != '\0'; i++){
+      if(search_for[i] == ';'){
+        dim++;
+      }
+    }
+    dim++;
 
+    char *token = strtok(search_for, ";");
+    int i = 0;
+    while(token != NULL){
+      pattern[i] = malloc(strlen(token)+1);
+      strcpy(pattern[i],token);
+      i++;
+      token = strtok(NULL,";");
+    }
+  }
 
   char buffer[1064] = "\0";
   int c;
   int64_t index = 0;
   int64_t offset = 0;
   int64_t string_start = 0;
-
 
   while((c = fgetc(file)) != EOF){
     // break;
@@ -105,7 +132,8 @@ int main(int argc, char **argv){
           if(search_type==NOSEARCH){
             printf("0x%" PRIx64 ": %s\n",string_start,buffer);
           }else{
-            if(pattern_match(buffer, search_for,search_type) == 0){
+            if(multi_pattern_match(buffer, pattern, dim, search_type) == true){
+            // if(pattern_match(buffer, search_for,search_type) == 0){
               printf("0x%" PRIx64 ": %s\n",string_start,buffer);
             }
           }
@@ -121,5 +149,12 @@ int main(int argc, char **argv){
     printf("0x%" PRIx64 ": %s\n",string_start,buffer);
   }
   fclose(file);
+  if(search_type != NOSEARCH){
+    // Free memory
+    for (int i = 0; i < dim; i++) {
+        free(pattern[i]);
+    }
+    free(pattern);
+  }
   return 0;
 }
