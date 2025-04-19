@@ -52,33 +52,51 @@ bool multi_pattern_match(char *input, char **patterns, int dim, int case_sensiti
   }
   return result;
 }
-int split(char ***list_string, char *string){
-  int dim = 0;
-  for(int i = 0; string[i] != '\0'; i++){
-    if(string[i] == ';'){
-      dim++;
-    }
-  }
-  *list_string = malloc(dim * sizeof(char*));
-  if(*list_string == NULL){
-    printf("Allocation error\n");
-    return -1;
-  }
-  dim++;
+int split(char ***list_string, char *string, char delimiter){
 
-  char *token = strtok(string, ";");
-  int i = 0;
-  // printf("%s\n",token);
-  while(token != NULL){
-    (*list_string)[i] = malloc(strlen(token)+1);
-    if((*list_string)[i] == NULL){
-      printf("Allocation error\n");
+  int dim = 0;
+  char token[64] = "\0";
+  int index = 0;
+  
+  *list_string = NULL;
+
+  for(int i = 0; string[i] != '\0'; i++){
+    if(index > 64){
+      printf("Token in split too big (>64)\n");
       return -1;
     }
-    strcpy((*list_string)[i],token);
-    i++;
-    token = strtok(NULL,";");
+    if(string[i] == '\\'){
+      i++;
+      token[index] = string[i];
+      index++;
+    }else if(string[i] == delimiter){
+      if(index>0){
+        dim++;
+        *list_string = realloc(*list_string, dim * sizeof(char*));
+        (*list_string)[dim - 1] = malloc(index+1);
+        int j = 0;
+        for(j = 0; j < index; j++){
+          (*list_string)[dim - 1][j] = token[j];
+        }
+        (*list_string)[dim - 1][j] = '\0';
+        index = 0;
+        memset(token,0,64);
+      }
+    }else{
+      token[index] = string[i];
+      index++;
+    }
   }
+  if (index > 0) {
+    dim++;
+    *list_string = realloc(*list_string, dim * sizeof(char*));
+    (*list_string)[dim - 1] = malloc(index + 1);
+    for (int j = 0; j < index; j++) {
+        (*list_string)[dim - 1][j] = token[j];
+    }
+    (*list_string)[dim - 1][index] = '\0';
+  }
+    
   return dim;
 }
 
@@ -166,7 +184,10 @@ int main(int argc, char **argv){
   int dim = 0;
 
   if(search_type != NOSEARCH){
-    dim = split(&pattern, search_for);
+    dim = split(&pattern, search_for,';');
+    if(dim == -1){
+      return -1;
+    }
   }
   print_ascii_strings(file, min_chars, search_type, dim, pattern);
   fclose(file);
