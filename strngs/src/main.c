@@ -73,7 +73,7 @@ int split(char ***list_string, char *string, char delimiter){
       if(index>0){
         dim++;
         *list_string = realloc(*list_string, dim * sizeof(char*));
-        (*list_string)[dim - 1] = malloc(index+1);
+        (*list_string)[dim - 1] = malloc(index + 1);
         int j = 0;
         for(j = 0; j < index; j++){
           (*list_string)[dim - 1][j] = token[j];
@@ -91,10 +91,11 @@ int split(char ***list_string, char *string, char delimiter){
     dim++;
     *list_string = realloc(*list_string, dim * sizeof(char*));
     (*list_string)[dim - 1] = malloc(index + 1);
-    for (int j = 0; j < index; j++) {
+    int j = 0;
+    for (j = 0; j < index; j++) {
         (*list_string)[dim - 1][j] = token[j];
     }
-    (*list_string)[dim - 1][index] = '\0';
+    (*list_string)[dim - 1][j] = '\0';
   }
     
   return dim;
@@ -192,7 +193,6 @@ int main(int argc, char **argv){
   print_ascii_strings(file, min_chars, search_type, dim, pattern);
   fclose(file);
   if(search_type != NOSEARCH){
-    // Free memory
     for (int i = 0; i < dim; i++) {
         free(pattern[i]);
     }
