@@ -52,6 +52,78 @@ bool multi_pattern_match(char *input, char **patterns, int dim, int case_sensiti
   }
   return result;
 }
+int split(char ***list_string, char *string){
+  int dim = 0;
+  for(int i = 0; string[i] != '\0'; i++){
+    if(string[i] == ';'){
+      dim++;
+    }
+  }
+  *list_string = malloc(dim * sizeof(char*));
+  if(*list_string == NULL){
+    printf("Allocation error\n");
+    return -1;
+  }
+  dim++;
+
+  char *token = strtok(string, ";");
+  int i = 0;
+  // printf("%s\n",token);
+  while(token != NULL){
+    (*list_string)[i] = malloc(strlen(token)+1);
+    if((*list_string)[i] == NULL){
+      printf("Allocation error\n");
+      return -1;
+    }
+    strcpy((*list_string)[i],token);
+    i++;
+    token = strtok(NULL,";");
+  }
+  return dim;
+}
+
+void print_ascii_strings(FILE *file, int min_chars, int search_type, int dim, char **pattern){
+
+  char buffer[1064] = "\0";
+  int c;
+  int64_t index = 0;
+  int64_t offset = 0;
+  int64_t string_start = 0;
+
+  while((c = fgetc(file)) != EOF){
+    // break;
+    if(isprint(c)){
+      if(index == 0){
+        string_start = offset;
+      }
+      if(index < 1064 - 1){
+        buffer[index++] = (char)c;
+      }
+    }else{
+      if(index >= min_chars){
+        buffer[index] = '\0';
+        if(buffer[0] != '.'){
+          if(search_type==NOSEARCH){
+            printf("[ASCII] 0x%" PRIx64 ": %s\n",string_start,buffer);
+          }else{
+            if(multi_pattern_match(buffer, pattern, dim, search_type) == true){
+            // if(pattern_match(buffer, search_for,search_type) == 0){
+              printf("[ASCII] 0x%" PRIx64 ": %s\n",string_start,buffer);
+            }
+          }
+        }
+      }
+      index = 0;
+    }
+    offset++;
+  }
+
+  if(index >= min_chars){
+    buffer[index] = '\0';
+    printf("0x%" PRIx64 ": %s\n",string_start,buffer);
+  }
+  return;  
+}
 
 int main(int argc, char **argv){
   if(argc < 2){
@@ -88,66 +160,15 @@ int main(int argc, char **argv){
     printf("Error opening file: %d-%s\n",error,input);
     return -1;
   }
+
   
   char **pattern = NULL;
   int dim = 0;
+
   if(search_type != NOSEARCH){
-    pattern = malloc(dim * sizeof(char*));
-    for(int i = 0; search_for[i] != '\0'; i++){
-      if(search_for[i] == ';'){
-        dim++;
-      }
-    }
-    dim++;
-
-    char *token = strtok(search_for, ";");
-    int i = 0;
-    while(token != NULL){
-      pattern[i] = malloc(strlen(token)+1);
-      strcpy(pattern[i],token);
-      i++;
-      token = strtok(NULL,";");
-    }
+    dim = split(&pattern, search_for);
   }
-
-  char buffer[1064] = "\0";
-  int c;
-  int64_t index = 0;
-  int64_t offset = 0;
-  int64_t string_start = 0;
-
-  while((c = fgetc(file)) != EOF){
-    // break;
-    if(isprint(c)){
-      if(index == 0){
-        string_start = offset;
-      }
-      if(index < 1064 - 1){
-        buffer[index++] = (char)c;
-      }
-    }else{
-      if(index >= min_chars){
-        buffer[index] = '\0';
-        if(buffer[0] != '.'){
-          if(search_type==NOSEARCH){
-            printf("0x%" PRIx64 ": %s\n",string_start,buffer);
-          }else{
-            if(multi_pattern_match(buffer, pattern, dim, search_type) == true){
-            // if(pattern_match(buffer, search_for,search_type) == 0){
-              printf("0x%" PRIx64 ": %s\n",string_start,buffer);
-            }
-          }
-        }
-      }
-      index = 0;
-    }
-    offset++;
-  }
-
-  if(index >= min_chars){
-    buffer[index] = '\0';
-    printf("0x%" PRIx64 ": %s\n",string_start,buffer);
-  }
+  print_ascii_strings(file, min_chars, search_type, dim, pattern);
   fclose(file);
   if(search_type != NOSEARCH){
     // Free memory
