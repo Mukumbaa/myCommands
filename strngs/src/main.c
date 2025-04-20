@@ -6,7 +6,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define MINL 4
 #define LENGHT_FLAG "-l"
 #define SEARCH_SENSITIVE_FLAG "-S"
 #define SEARCH_NOSENSITIVE_FLAG "-s"
@@ -143,7 +142,9 @@ void print_ascii_strings(FILE *file, int min_chars, int search_type, int dim, ch
   }
   return;  
 }
-
+// void print_utf16le_strings(FILE *file, int min_chars, int search_type, int dim, char **pattern){
+//   return;
+// }
 int main(int argc, char **argv){
   if(argc < 2){
     printf("Expected argument(s)");
@@ -155,18 +156,33 @@ int main(int argc, char **argv){
   int search_type = NOSEARCH;
   
   for(int i = 1; i < argc; i++){
-    if(strcmp(argv[i],LENGHT_FLAG) == 0){
+    if(strcmp(argv[i],LENGHT_FLAG) == 0){ //flag -l
       i++;
-      min_chars = strtoll(argv[i], NULL, 0);
-    }else if(strcmp(argv[i],SEARCH_NOSENSITIVE_FLAG) == 0){
+      if(i < argc){
+        min_chars = strtoll(argv[i], NULL, 0);
+      }else{
+        printf("Wrong number of arguments\n");
+        return -1;
+      }
+    }else if(strcmp(argv[i],SEARCH_NOSENSITIVE_FLAG) == 0){ //flag -s
       search_type = NOSENSITIVE;
       i++;
-      strcpy(search_for, argv[i]);
+      if (i < argc){
+        strcpy(search_for, argv[i]);
+      }else{
+        printf("Wrong number of arguments\n");
+        return -1;
+      }
     }
-    else if(strcmp(argv[i],SEARCH_SENSITIVE_FLAG) == 0){
+    else if(strcmp(argv[i],SEARCH_SENSITIVE_FLAG) == 0){ //flag -S
       search_type = SENSITIVE;
       i++;
-      strcpy(search_for, argv[i]);
+      if (i < argc){
+        strcpy(search_for, argv[i]);
+      }else{
+        printf("Wrong number of arguments\n");
+        return -1;
+      }
     }
     else{
       strcpy(input, argv[i]);
