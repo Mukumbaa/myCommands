@@ -142,9 +142,6 @@ void print_ascii_strings(FILE *file, int min_chars, int search_type, int dim, ch
   }
   return;  
 }
-// void print_utf16le_strings(FILE *file, int min_chars, int search_type, int dim, char **pattern){
-//   return;
-// }
 int main(int argc, char **argv){
   if(argc < 2){
     printf("Expected argument(s)");
@@ -154,7 +151,6 @@ int main(int argc, char **argv){
   char input[64] = "\0";
   char search_for[1064] = "\0";
   int search_type = NOSEARCH;
-  
   for(int i = 1; i < argc; i++){
     if(strcmp(argv[i],LENGHT_FLAG) == 0){ //flag -l
       i++;
