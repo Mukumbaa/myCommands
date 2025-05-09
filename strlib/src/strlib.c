@@ -1,4 +1,5 @@
 #include "../include/strlib.h"
+// #include <stdexcept>
 
 
 String str_init(const char *s, int max_len){
@@ -22,36 +23,53 @@ String str_init(const char *s, int max_len){
 void str_reset(String *str){
   *str = str_init("",5);
 }
-void str_reset_raw(char **str, int len){
+void str_resetr(char **str, int len){
   for(int i = 0; i < len; i++){
     (*str)[i] = '\0';
   }
 }
 
-void str_cat(String *dest, const String src){
+void str_cat(String *dest, const String src, int index){
 
   int new_len = dest->len + src.len;
   dest->str = realloc(dest->str, (new_len + 1) * sizeof(char));
 
   int i = 0;
   int j = 0;
-  
-  for (i = dest->len, j = 0; i <= new_len && j <= src.len; i++, j++) {
-    dest->str[i] = src.str[j];
+
+
+
+  if(index >= 0 && index <= dest->len){
+    for(i = dest->len; i >= index && i < new_len; i--){
+      dest->str[i + src.len] = dest->str[i];
+    }
+    for(i = 0; i < src.len && i < new_len; i++){
+      dest->str[index + i] = src.str[i];
+    }
+    dest->str[new_len + 1] = '\0';
+    dest->len = new_len;
+  }else{
+    for (i = dest->len, j = 0; i <= new_len && j <= src.len; i++, j++) {
+      dest->str[i] = src.str[j];
+    }
+    dest->str[i] = '\0';
+    dest->len = new_len;
   }
-  dest->str[i] = '\0';
+
+
+
+
   
-  dest->len = new_len;
   return;
 }
 
-void str_cat_raw(String *dest, const char *src, int max_len){
+void str_catr(String *dest, const char *src,  int max_len){
 
   int len = 0;
   for(int i = 0; i < max_len && src[i] != '\0'; i++){
     len++;
   }
-
+  
   int new_len = dest->len + len ;
   dest->str = realloc(dest->str, (new_len) * sizeof(char));
 
@@ -80,7 +98,7 @@ int str_cmp(String str1, String str2){
   }
   return 0;
 }
-int str_cmp_raw(String str1, char *str2, int max_len){
+int str_cmpr(String str1, char *str2, int max_len){
   int len = 0;
   for(int i = 0; i < max_len && str2[i] != '\0'; i++){
     len++;
@@ -126,7 +144,7 @@ int str_contains(String str, String pattern, int is_case_sensitive){
   }
   return -1;  
 }
-int str_contains_raw(String str, char *pattern, int max_len, int is_case_sensitive){
+int str_containsr(String str, char *pattern, int max_len, int is_case_sensitive){
 
   int len = 0;
   for(int i = 0; i < max_len && pattern[i] != '\0'; i++){
@@ -164,7 +182,7 @@ int str_split(String **arr, String str, char delimiter, int token_max_len){
   int dim = 0;
   int index = 0;
   char *token = malloc(token_max_len * sizeof(char));
-  str_reset_raw(&token, token_max_len);
+  str_resetr(&token, token_max_len);
 
   
   
@@ -179,7 +197,7 @@ int str_split(String **arr, String str, char delimiter, int token_max_len){
         dim++;
         *arr = realloc(*arr, dim * sizeof(String));
         (*arr)[dim - 1] = str_init(token, index + 1);
-        str_reset_raw(&token, token_max_len);
+        str_resetr(&token, token_max_len);
         index = 0;
       }
     }else{
@@ -191,17 +209,17 @@ int str_split(String **arr, String str, char delimiter, int token_max_len){
     dim++;
     *arr = realloc(*arr, dim * sizeof(String));
     (*arr)[dim - 1] = str_init(token, index + 1);
-    str_reset_raw(&token, token_max_len);
+    str_resetr(&token, token_max_len);
   }
   return dim;
 }
-int str_split_raw(String **arr, char *str, char delimiter, int token_max_len, int max_len){
+int str_splitr(String **arr, char *str, char delimiter, int token_max_len, int max_len){
   
   *arr = NULL;
   int dim = 0;
   int index = 0;
   char *token = malloc(token_max_len * sizeof(char));
-  str_reset_raw(&token, token_max_len);
+  str_resetr(&token, token_max_len);
 
   int len = 0;
   for(int i = 0; i < max_len && str[i] != '\0'; i++){
@@ -221,7 +239,7 @@ int str_split_raw(String **arr, char *str, char delimiter, int token_max_len, in
         *arr = realloc(*arr, dim * sizeof(String));
         (*arr)[dim - 1] = str_init(token, index + 1);
         index = 0;
-        str_reset_raw(&token, token_max_len);
+        str_resetr(&token, token_max_len);
       }
     }else{
       token[index] = str[i];
@@ -232,7 +250,7 @@ int str_split_raw(String **arr, char *str, char delimiter, int token_max_len, in
     dim++;
     *arr = realloc(*arr, dim * sizeof(String));
     (*arr)[dim - 1] = str_init(token, index + 1);
-    str_reset_raw(&token, token_max_len);
+    str_resetr(&token, token_max_len);
   }
   return dim;
 
