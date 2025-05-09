@@ -7,7 +7,7 @@ This repository contains some utils i wanted to build for fun.<br />
 Options for `strngs`:<br />
 * `-l num`<br />
   Will find only the strings longer then `num` (which is an integer).<br />
-    Default: 4<br />
+  Default: 4<br />
 * `-s "pattern1;pattern2;..."`<br />
   Will find only the strings that contains the patterns given. You can give more patterns by separating them with a `;`.<br />
   Is NOT a regex, it will find the same exact word you give.<br />
