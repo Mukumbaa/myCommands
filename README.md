@@ -1,5 +1,5 @@
 # myCommands
-This repository contains some utils i wanted to build for fun.<br />
+This repository contains some utils i wanted to build for fun.<br /><br />
 
 ## strngs
 `strngs` is a copy of the comand `strings`. Given a .exe file in input, it will find the printable strings contained in the file.<br />
