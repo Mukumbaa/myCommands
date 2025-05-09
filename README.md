@@ -47,7 +47,7 @@ Options for `c2asm`:<br />
 ```
   c2asm -ed file.c out
 ```
-creates an out.asm and out.txt file.<br />
+creates an out.asm and out.txt file.<br /><br />
 ## ftree
 `ftree` will print a simple tree version of the directory where it is launched.<br /><br /> 
 Options for `ftree`:<br />
