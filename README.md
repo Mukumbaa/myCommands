@@ -66,5 +66,5 @@ Option for `hxd`:<br />
 
 `hxd` is capable of understending if the number given in input is decimal or hexadecimal,
 so the flags `-d` and `-h` can be omitted for most cases.<br />
-## libstr  
+## libstr
  
