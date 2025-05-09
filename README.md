@@ -16,6 +16,6 @@ Options for `strngs`:<br />
   Same as `-s` but case sensitive.<br />
 * Example of usage:
 ```
-  strngs file.exe -s "thread" -l 10<br /> 
+  strngs file.exe -s "thread" -l 10
 ```
 ## c2asm
