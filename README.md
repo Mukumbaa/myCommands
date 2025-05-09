@@ -14,5 +14,8 @@ Options for `strngs`:<br />
   Not case sensitive.<br />
 * `-S "pattern1;pattern2;..."`<br />
   Same as `-s` but case sensitive.<br />
-
+* Example of usage:
+```
+  strngs file.exe -s "thread" -l 10<br /> 
+```
 ## c2asm
