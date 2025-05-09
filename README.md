@@ -19,6 +19,7 @@ Options for `strngs`:<br />
   strngs file.exe -s "thread" -l 10
 ```
 <br />
+
 ## c2asm
 `c2asm` take in input a .c file and gives a .asm file.<br />
 This is for learning assembly and it will NOT work with complex c file.<br />
@@ -46,6 +47,5 @@ Options for `c2asm`:<br />
 ```
   c2asm -ed file.c out
 ```
-creates a out.asm and out.txt
-<br />
+creates a out.asm and out.txt<br />
 
