@@ -1,6 +1,6 @@
 /**
- * @file strlib.h
- * @brief strlib is a library for c language to manage strings
+ * @file libstr.h
+ * @brief libstr is a library for c language to manage strings
  */
 #ifndef STR_LIB_H
 #define STR_LIB_H

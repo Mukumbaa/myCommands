@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "../include/strlib.h"
+#include "../include/libstr.h"
 
 int main(){
 
