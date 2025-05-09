@@ -1,6 +1,4 @@
 #include "../include/libstr.h"
-// #include <stdexcept>
-
 
 String str_init(const char *s, int max_len){
 
@@ -28,7 +26,6 @@ void str_resetr(char **str, int len){
     (*str)[i] = '\0';
   }
 }
-
 void str_cat(String *dest, const String src, int index){
 
   int new_len = dest->len + src.len;

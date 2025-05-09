@@ -67,4 +67,48 @@ Option for `hxd`:<br />
 `hxd` is capable of understending if the number given in input is decimal or hexadecimal,
 so the flags `-d` and `-h` can be omitted for most cases.<br /><br />
 ## libstr
+`libstr` is a library to manage and manipulate strings in c. Uses a String structure with
+the fields str, containing the char*, and len, containing the length of the string.<br /><br />
+List of the functions:<br />
+### String str_init(const char *s, int max_len)
+Descriprion<br />
+Init a String structure by copying a C-style string, up to a specified maximum length.<br />
+param s<br />
+Pointer to a constant C-style string<br />
+param max_len<br />
+Maximum length for the string<br />
+return<br />
+Returns a String structure containing the C-style string given in input and its length.<br />
+### void str_reset(String *str){
+Description<br />
+Reset a given String structure<br />
+param str<br />
+Pointer to a String structure<br />
+return<br />
+void<br />
+### void str_resetr(char **str, int len)
+Description<br />
+Reset a given C-style string<br />
+param str<br />
+Pointer to a C-style string<br />
+param len<br />
+Maximum length to check<br />
+return<br />
+void<br />
+### void str_cat(String *dest, const String src, int index)
+Description<br />
+Perform a concatenation of the content of two String structure.<br />
+This modify the first String structure given.<br />
+Takes also an index, the content of the second String will<br />
+go from the index given of the first String. If the value of index<br />
+is less or greater of the sum of the two String, will perform the<br />
+simple concatenation at the end of the first String.<br />
+param dest<br />
+First String, this will be modified<br />
+param src<br />
+Second String<br />
+param index<br />
+Index of the first String where the content of the second String will be inserted<br />
+return<br />
+void<br />
  
