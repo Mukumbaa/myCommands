@@ -47,5 +47,5 @@ Options for `c2asm`:<br />
 ```
   c2asm -ed file.c out
 ```
-creates a out.asm and out.txt<br />
+creates an out.asm and out.txt file.<br />
 
