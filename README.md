@@ -52,5 +52,5 @@ creates an out.asm and out.txt file.<br />
 `ftree` will print a simple tree version of the directory where it is launched.<br /><br /> 
 Options for `ftree`:<br />
 * `-d`:<br />
-  will go in loop and, if any changes are detected in the repository, will print the update tree of the directory.<br /><br />
+  Will go in loop and, if any changes are detected in the repository, it will print the update tree of the directory.<br /><br />
 ## hxd
