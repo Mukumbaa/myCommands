@@ -61,9 +61,8 @@ Option for `hxd`:<br />
 * `-h`:<br />
   Will convert to hexadecimal the given number.
 * `-64`:<br />
-  Will use a 64 bit rappresentation.
-  Running `hxd 0xffffffff` will give `-1` in output, running `hxd -64 0xffffffff` will give `4294967295` in output.
-<br /><br />
+  Will use a 64 bit rappresentation.<br />
+  Running `hxd 0xffffffff` will give `-1` in output, running `hxd -64 0xffffffff` will give `4294967295` in output.<br /><br />
 `hxd` is capable of understending if the number given in input is decimal or hexadecimal,
 so the flags `-d` and `-h` can be omitted for most cases.<br />
 ## libstr  
