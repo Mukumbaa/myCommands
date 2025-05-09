@@ -49,8 +49,8 @@ Options for `c2asm`:<br />
 ```
 creates an out.asm and out.txt file.<br />
 ## ftree
-`ftree` will print a simple tree version of the directory where is launched.<br /><br /> 
+`ftree` will print a simple tree version of the directory where it is launched.<br /><br /> 
 Options for `ftree`:<br />
-* `-d`:
+* `-d`:<br />
   will go in loop and, if any changes are detected in the repository, will print the update tree of the directory.<br /><br />
 ## hxd
