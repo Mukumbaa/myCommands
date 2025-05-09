@@ -13,6 +13,6 @@ Options for `strngs`:<br />
   Is NOT a regex, it will find the same exact word you give.<br />
   Not case sensitive.<br />
 * `-S "pattern1;pattern2;..."`<br />
-  Same as `-s` but case sensitive<br />
+  Same as `-s` but case sensitive.<br />
 
 ## c2asm
