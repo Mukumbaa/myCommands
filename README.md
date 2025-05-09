@@ -54,3 +54,17 @@ Options for `ftree`:<br />
 * `-d`:<br />
   Will go in loop and, if any changes are detected in the repository, it will print the update tree of the directory.<br /><br />
 ## hxd
+`hxd` will take a decimal or hexadecimal number and convert it in their corrispective decimal or hexadecimal rappresentation.<br /><br />
+Option for `hxd`:<br />
+* `-d`:<br />
+  Will convert to decimal the given number.
+* `-h`:<br />
+  Will convert to hexadecimal the given number.
+* `-64`:<br />
+  Will use a 64 bit rappresentation.
+  Running `hxd 0xffffffff` will give `-1` in output, running `hxd -64 0xffffffff` will give `4294967295` in output.
+<br />
+`hxd` is capable of understending if the number given in input is decimal or hexadecimal,
+so the flags `-d` and `-h` can be omitted for most cases.<br />
+## libstr  
+ 
