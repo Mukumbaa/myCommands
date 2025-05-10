@@ -70,6 +70,7 @@ so the flags `-d` and `-h` can be omitted for most cases.<br /><br />
 `libstr` is a library to manage and manipulate strings in c. Uses a String structure with
 the fields str, containing the char*, and len, containing the length of the string.<br /><br />
 ### List of the functions:<br />
+___
 #### `String str_init(const char *s, int max_len)`
 
 Initializes a `String` structure by copying a null-terminated C string, with bounds checking.
