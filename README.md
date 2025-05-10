@@ -105,10 +105,10 @@ ___
 #### `void str_cat(String *dest, const String src, int index)`
 
 Perform a concatenation of the content of two String structure.
-This modify the first String structure given.
+This modify the first given String structure.
 Takes also an index, the content of the second String will
 go from the index given of the first String. If the value of index
-is less or greater of the sum of the two String, will perform the
+is less or greater of the sum of the two Strings, will perform the
 simple concatenation at the end of the first String.
 
 **Parameters:**<br />
