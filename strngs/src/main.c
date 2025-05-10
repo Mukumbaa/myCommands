@@ -5,6 +5,7 @@
 #include <inttypes.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 
 #define LENGHT_FLAG "-l"
 #define SEARCH_SENSITIVE_FLAG "-S"
@@ -13,10 +14,10 @@
 #define NOSENSITIVE 2
 #define NOSEARCH 0
 
-typedef enum bool{
-  false = 0,
-  true = 1,
-}bool;
+// typedef enum bool{
+//   false = 0,
+//   true = 1,
+// }bool;
 
 bool pattern_match(char *input, char *pattern, int case_sensitive){
 
