@@ -80,9 +80,9 @@ Initializes a `String` structure by copying a null-terminated C string, with bou
 - `max_len` (*int*): Maximum number of characters to copy (excluding null-terminator)  
   *Must be ≥ 0*
 
-__Return__ (*String*)<br/>
----
-### void str_reset(String *str){
+**Return ->** (*String*)
+
+#### `void str_reset(String *str)`
 Description<br />
 Reset a given String structure<br />
 param str<br />
