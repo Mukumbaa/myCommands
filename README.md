@@ -70,15 +70,27 @@ so the flags `-d` and `-h` can be omitted for most cases.<br /><br />
 `libstr` is a library to manage and manipulate strings in c. Uses a String structure with
 the fields str, containing the char*, and len, containing the length of the string.<br /><br />
 List of the functions:<br />
-### String str_init(const char *s, int max_len)
-Descriprion<br />
-Init a String structure by copying a C-style string, up to a specified maximum length.<br />
-param s<br />
-Pointer to a constant C-style string<br />
-param max_len<br />
-Maximum length for the string<br />
-return<br />
-Returns a String structure containing the C-style string given in input and its length.<br />
+### `String str_init(const char *s, int max_len)`
+
+Initializes a `String` structure by copying a null-terminated C string, with bounds checking.
+
+#### Parameters:
+- **`s`**  
+  Pointer to the source null-terminated C string  
+  *Must not be NULL*
+- **`max_len`**  
+  Maximum number of characters to copy (excluding null-terminator)  
+  *Must be ≥ 0*
+
+#### Return:
+A new `String` structure containing:  
+- The copied string content (truncated to `max_len` if necessary)
+- The actual length of the copied string
+
+#### Notes:
+- If `max_len` is 0, returns an empty `String`
+- If `strlen(s) < max_len`, copies the entire string
+- Guarantees proper null-termination in the resulting structure
 ### void str_reset(String *str){
 Description<br />
 Reset a given String structure<br />
