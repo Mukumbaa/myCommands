@@ -84,35 +84,40 @@ Initializes a `String` structure by copying a null-terminated C string, with bou
 **Return ->** (*String*)
 ___
 #### `void str_reset(String *str)`
-Description<br />
+
 Reset a given String structure<br />
-param str<br />
-Pointer to a String structure<br />
-return<br />
-void<br />
-### void str_resetr(char **str, int len)
-Description<br />
+
+**Parameters:**<br />
+- `str` (*String \**): Pointer to a String structure
+
+**Returns ->** (*void*)
+___
+#### `void str_resetr(char **str, int len)`
+
 Reset a given C-style string<br />
-param str<br />
-Pointer to a C-style string<br />
-param len<br />
-Maximum length to check<br />
-return<br />
-void<br />
-### void str_cat(String *dest, const String src, int index)
-Description<br />
-Perform a concatenation of the content of two String structure.<br />
-This modify the first String structure given.<br />
-Takes also an index, the content of the second String will<br />
-go from the index given of the first String. If the value of index<br />
-is less or greater of the sum of the two String, will perform the<br />
-simple concatenation at the end of the first String.<br />
-param dest<br />
-First String, this will be modified<br />
-param src<br />
-Second String<br />
-param index<br />
-Index of the first String where the content of the second String will be inserted<br />
-return<br />
-void<br />
+
+**Parameters:**<br />
+- `str` (*char \*\**): Pointer to a C-style string
+- `len` (*int*): Maximum bounds check for string
+
+**Return ->** (*void*)
+___
+#### `void str_cat(String *dest, const String src, int index)`
+
+Perform a concatenation of the content of two String structure.
+This modify the first String structure given.
+Takes also an index, the content of the second String will
+go from the index given of the first String. If the value of index
+is less or greater of the sum of the two String, will perform the
+simple concatenation at the end of the first String.
+
+**Parameters:**<br />
+- `dest` (*String \**): Pointer to a String structure.
+  *This parameter WILL be MODIFIED*
+- `src` (*String*): String structure, its content will be inserted in `dest`
+- `index` (*int*): Indicate the index relative to the first String (`dest`) where the content of the second String
+(`src`) will be inserted.
+
+**Retrun ->** (*void*)
+___
  
