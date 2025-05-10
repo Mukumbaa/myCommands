@@ -98,7 +98,7 @@ int main(int argc, char **argv){
     }else if(strcmp(argv[i],"-64") == 0){
       flag64 = true;
     }else{
-      strcpy(input, argv[i])
+      strcpy(input, argv[i]);
     }
   }
   

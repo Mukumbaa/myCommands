@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <process.h>
 #include <string.h>
 
 static inline void execCommand(int eOk, int edOk, char *file1, char *file2){

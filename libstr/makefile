@@ -24,8 +24,8 @@ else
 	CLEAN_O = rm $(TARGET).o
 	MKDIR = mkdir -p build
 	MKDIR_SHIP = mkdir -p ship
-	COPY_A_SHIP = cp $(TARGET).a ship//$(TARGET).a
-	COPY_H_SHIP = cp include//$(TARGET).h shi//$(TARGET).h
+	COPY_A_SHIP = cp $(TARGET).a ship/$(TARGET).a
+	COPY_H_SHIP = cp include/$(TARGET).h ship/$(TARGET).h
 	EXE =
 endif
 

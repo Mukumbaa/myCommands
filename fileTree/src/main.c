@@ -1,11 +1,11 @@
 #include <stdio.h>
 #include <sys/stat.h>   // Per stat()
 #include <string.h>     // Per strcmp()
-#include "../include/dirent.h"
-#include <time.h>
+#include <stdlib.h>
 
 #ifdef _WIN32
 #include <windows.h>
+#include "../include/dirent.h"
 #define CLEAR_SCREEN() system("cls")
 #define SLEEP_SECONDS(sec) Sleep((sec) * 1000)
 #else
