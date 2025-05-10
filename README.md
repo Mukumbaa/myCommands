@@ -90,11 +90,11 @@ Reset a given String structure<br />
 **Parameters:**<br />
 - `str` (*String \**): Pointer to a String structure
 
-**Returns ->** (*void*)
+**Return ->** (*void*)
 ___
 #### `void str_resetr(char *str, int len)`
 
-Reset a given C-style string<br />
+Reset a given C string, with bounds checking
 
 **Parameters:**<br />
 - `str` (*char \**): Pointer to a C-style string
