@@ -5,11 +5,8 @@
 #include <string.h>
 #include <ctype.h>
 #include <inttypes.h>
+#include <stdbool.h>
 
-typedef enum {
-  true = 1,
-  false = 0,
-}bool;
 
 typedef enum {
   notGiven = 0,

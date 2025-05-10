@@ -14,10 +14,6 @@
 #define NOSENSITIVE 2
 #define NOSEARCH 0
 
-// typedef enum bool{
-//   false = 0,
-//   true = 1,
-// }bool;
 
 bool pattern_match(char *input, char *pattern, int case_sensitive){
 
