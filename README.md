@@ -81,7 +81,7 @@ Initializes a `String` structure by copying a null-terminated C string, with bou
   *Must be ≥ 0*
 
 **Return ->** (*String*)
-
+___
 #### `void str_reset(String *str)`
 Description<br />
 Reset a given String structure<br />
