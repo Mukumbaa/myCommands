@@ -187,9 +187,9 @@ int main(int argc, char **argv){
   }
 
   FILE *file = NULL;
-  int error = fopen_s(&file,input,"rb");
-  if(error != 0) {
-    printf("Error opening file: %d-%s\n",error,input);
+  file = fopen(input,"rb");
+  if(file == NULL) {
+    printf("Error opening file: %s\n",input);
     return -1;
   }
 
