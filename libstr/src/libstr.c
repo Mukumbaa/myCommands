@@ -26,11 +26,6 @@ void str_resetr(char *str, int len){
     str[i] = '\0';
   }
 }
-void prova(char *str, int len){
-  for(int i = 0; i < len; i++){
-    str[i] = '\0';
-  }
-}
 void str_cat(String *dest, const String src, int index){
 
   int new_len = dest->len + src.len;

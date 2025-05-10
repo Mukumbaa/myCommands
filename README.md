@@ -120,4 +120,49 @@ simple concatenation at the end of the first String.
 
 **Retrun ->** (*void*)
 ___
- 
+#### `int str_cmp(String str1, String str2)`
+
+Compare the two given Strings. If their contents are equals returns 0, else 1.
+
+**Parameters:**<br />
+- `str1` (*String*): First String.
+- `str2` (*String*): Second String.
+
+**Return ->**  (*int*)
+___
+#### `int str_contains(String str, String pattern, int is_case_sensitive)`
+
+Controls if a given String (`pattern`) is contained in another String (`str`).
+Returns the index where the pattern start in the first String.
+
+**Parameters:**<br />
+- `str` (*String*): String where to find the pattern.
+- `pattern` (*String*): String containing the pattern.
+- `is_case_sensitive` (*int*): Flag, 1 for case sensitive search, 0 for non case sensitive search.  
+
+**Returns ->** (*int*)
+___
+#### `int str_split(String **arr, String str, char delimiter, int token_max_len)`
+
+Splits the given String by the given char delimiter. Its required a max length for the tokens.
+Returns the number of splits.
+
+**Parameters:**<br />
+- `arr` (*String \*\**): Pointer to String*, it will be populated with the tokens found by the split.
+- `str` (*String*): String to split.
+- `delimiter` (*char*): Delimiter for the split.
+- `token_max_len` (*int*): Max length for the tokens found.
+
+**Returns ->** (*int*)
+___
+#### `void str_cpy(String *dest, const String src)`
+
+Copies the content of the second String to the first String.
+
+**Parameters:**<br />
+- `dest` (*String \**): Where the content will be copied.
+- `src` (*String*): Content to be copied.
+
+**Returns ->** (*void*)
+___
+
