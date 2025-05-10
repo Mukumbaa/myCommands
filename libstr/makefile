@@ -29,8 +29,7 @@ else
 	EXE =
 endif
 
-all:
-	$(TARGET)_TEST$(EXE)
+all:$(TARGET)_TEST$(EXE)
 	@echo -------------------------
 	@echo -- Test build finished --
 	@echo -------------------------

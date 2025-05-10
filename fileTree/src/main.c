@@ -9,6 +9,7 @@
 #define CLEAR_SCREEN() system("cls")
 #define SLEEP_SECONDS(sec) Sleep((sec) * 1000)
 #else
+#include <dirent.h>
 #include <unistd.h>
 #define CLEAR_SCREEN() system("clear")
 #define SLEEP_SECONDS(sec) sleep(sec)

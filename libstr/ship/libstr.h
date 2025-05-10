@@ -1,7 +1,10 @@
 /**
- * @file libstr.h
- * @brief libstr is a library for c language to manage strings
- */
+ * libstr.h
+ * libstr is a library for c language to manage strings
+*/
+// DOCS:
+// https://github.com/Mukumbaa/myCommands?tab=readme-ov-file#libstr
+// 
 #ifndef STR_LIB_H
 #define STR_LIB_H
 #include <stdlib.h>
