@@ -69,22 +69,19 @@ so the flags `-d` and `-h` can be omitted for most cases.<br /><br />
 ## libstr
 `libstr` is a library to manage and manipulate strings in c. Uses a String structure with
 the fields str, containing the char*, and len, containing the length of the string.<br /><br />
-List of the functions:<br />
-### `String str_init(const char *s, int max_len)`
+### List of the functions:<br />
+#### `String str_init(const char *s, int max_len)`
 
 Initializes a `String` structure by copying a null-terminated C string, with bounds checking.
 
-#### Parameters:
-- **`s`**  
-  Pointer to the source null-terminated C string  
+**Parameters:**<br/>
+- `s` (*char \**): Pointer to the source null-terminated C string  
   *Must not be NULL*
-- **`max_len`**  
-  Maximum number of characters to copy (excluding null-terminator)  
+- `max_len` (*int*): Maximum number of characters to copy (excluding null-terminator)  
   *Must be ≥ 0*
 
-#### Return:
-A new `String` structure.
-
+**Return ->** (*String*)<br/>
+---
 ### void str_reset(String *str){
 Description<br />
 Reset a given String structure<br />
