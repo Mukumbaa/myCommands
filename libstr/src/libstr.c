@@ -21,9 +21,14 @@ String str_init(const char *s, int max_len){
 void str_reset(String *str){
   *str = str_init("",5);
 }
-void str_resetr(char **str, int len){
+void str_resetr(char *str, int len){
   for(int i = 0; i < len; i++){
-    (*str)[i] = '\0';
+    str[i] = '\0';
+  }
+}
+void prova(char *str, int len){
+  for(int i = 0; i < len; i++){
+    str[i] = '\0';
   }
 }
 void str_cat(String *dest, const String src, int index){
@@ -179,7 +184,7 @@ int str_split(String **arr, String str, char delimiter, int token_max_len){
   int dim = 0;
   int index = 0;
   char *token = malloc(token_max_len * sizeof(char));
-  str_resetr(&token, token_max_len);
+  str_resetr(token, token_max_len);
 
   
   
@@ -194,7 +199,7 @@ int str_split(String **arr, String str, char delimiter, int token_max_len){
         dim++;
         *arr = realloc(*arr, dim * sizeof(String));
         (*arr)[dim - 1] = str_init(token, index + 1);
-        str_resetr(&token, token_max_len);
+        str_resetr(token, token_max_len);
         index = 0;
       }
     }else{
@@ -206,7 +211,7 @@ int str_split(String **arr, String str, char delimiter, int token_max_len){
     dim++;
     *arr = realloc(*arr, dim * sizeof(String));
     (*arr)[dim - 1] = str_init(token, index + 1);
-    str_resetr(&token, token_max_len);
+    str_resetr(token, token_max_len);
   }
   return dim;
 }
@@ -216,7 +221,7 @@ int str_splitr(String **arr, char *str, char delimiter, int token_max_len, int m
   int dim = 0;
   int index = 0;
   char *token = malloc(token_max_len * sizeof(char));
-  str_resetr(&token, token_max_len);
+  str_resetr(token, token_max_len);
 
   int len = 0;
   for(int i = 0; i < max_len && str[i] != '\0'; i++){
@@ -236,7 +241,7 @@ int str_splitr(String **arr, char *str, char delimiter, int token_max_len, int m
         *arr = realloc(*arr, dim * sizeof(String));
         (*arr)[dim - 1] = str_init(token, index + 1);
         index = 0;
-        str_resetr(&token, token_max_len);
+        str_resetr(token, token_max_len);
       }
     }else{
       token[index] = str[i];
@@ -247,7 +252,7 @@ int str_splitr(String **arr, char *str, char delimiter, int token_max_len, int m
     dim++;
     *arr = realloc(*arr, dim * sizeof(String));
     (*arr)[dim - 1] = str_init(token, index + 1);
-    str_resetr(&token, token_max_len);
+    str_resetr(token, token_max_len);
   }
   return dim;
 

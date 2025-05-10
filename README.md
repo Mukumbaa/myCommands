@@ -92,12 +92,12 @@ Reset a given String structure<br />
 
 **Returns ->** (*void*)
 ___
-#### `void str_resetr(char **str, int len)`
+#### `void str_resetr(char *str, int len)`
 
 Reset a given C-style string<br />
 
 **Parameters:**<br />
-- `str` (*char \*\**): Pointer to a C-style string
+- `str` (*char \**): Pointer to a C-style string
 - `len` (*int*): Maximum bounds check for string
 
 **Return ->** (*void*)
