@@ -84,13 +84,7 @@ Initializes a `String` structure by copying a null-terminated C string, with bou
 
 #### Return:
 A new `String` structure containing:  
-- The copied string content (truncated to `max_len` if necessary)
-- The actual length of the copied string
-
-#### Notes:
-- If `max_len` is 0, returns an empty `String`
-- If `strlen(s) < max_len`, copies the entire string
-- Guarantees proper null-termination in the resulting structure
+ `max_len` if necessary)
 ### void str_reset(String *str){
 Description<br />
 Reset a given String structure<br />
