@@ -83,8 +83,8 @@ Initializes a `String` structure by copying a null-terminated C string, with bou
   *Must be ≥ 0*
 
 #### Return:
-A new `String` structure containing:  
- `max_len` if necessary)
+A new `String` structure containing
+
 ### void str_reset(String *str){
 Description<br />
 Reset a given String structure<br />
