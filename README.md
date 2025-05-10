@@ -85,7 +85,7 @@ Initializes a `String` structure by copying a null-terminated C string, with bou
 ___
 #### `void str_reset(String *str)`
 
-Reset a given String structure<br />
+Reset a given String structure.
 
 **Parameters:**<br />
 - `str` (*String \**): Pointer to a String structure
@@ -94,7 +94,7 @@ Reset a given String structure<br />
 ___
 #### `void str_resetr(char *str, int len)`
 
-Reset a given C string, with bounds checking
+Reset a given C string, with bounds checking.
 
 **Parameters:**<br />
 - `str` (*char \**): Pointer to a C-style string
