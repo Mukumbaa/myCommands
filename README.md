@@ -165,4 +165,14 @@ Copies the content of the second String to the first String.
 
 **Returns ->** (*void*)
 ___
+#### `void str_char(String *dest, char c)`
+
+Add the char given to the end of the string
+
+**Parameters:**<br />
+- `dest` (*String \**): The String where the char will be added at the end.
+- `c` (*char*): Char to add.
+
+**Returns ->** (*void*)
+___
 

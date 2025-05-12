@@ -68,7 +68,7 @@ void str_catr(String *dest, const char *src,  int max_len){
   }
   
   int new_len = dest->len + len ;
-  dest->str = realloc(dest->str, (new_len) * sizeof(char));
+  dest->str = realloc(dest->str, (new_len + 1) * sizeof(char));
 
   int i = 0;
   int j = 0;
@@ -254,7 +254,13 @@ int str_splitr(String **arr, char *str, char delimiter, int token_max_len, int m
 }
 void str_cpy(String *dest, const String src){
   
-  printf("strcpy\n");
   *dest = str_init(src.str, src.len + 1);
   return;  
 }
+void str_char(String *dest, char c){
+  dest->str[dest->len] = c;
+  dest->len++;
+  dest->str = realloc(dest->str, (dest->len + 1) * sizeof(char));
+  dest->str[dest->len] = '\0';
+}
+

@@ -32,6 +32,6 @@ int str_split(String **arr, String str, char delimiter, int token_max_len);
 int str_splitr(String **arr, char *str, char delimiter, int token_max_len, int max_len);
 void str_cpy(String *dest, const String src);
 // to do
-
+void str_char(String *dest, char c);
 
 #endif
