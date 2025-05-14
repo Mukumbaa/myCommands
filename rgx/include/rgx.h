@@ -37,6 +37,7 @@ typedef struct regex_e {
 } regex_e;
 
 int parse_regex(String regex, regex_e **list, int *size);
+bool match_regex_anywhere(regex_e *regex, int size, String input);
 String string_regex_op(regex_op r_op);
 
 #endif
