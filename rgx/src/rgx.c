@@ -104,31 +104,67 @@ bool match_regex(regex_e *regex, int size, String input, int *s_idx) {
   // return s_idx == input.len;
   return true;
 }
+void print_match(int start, int s_idx, String input) {
+  // printf("Match\n");
+  printf("start:%d-s_idx:%d\n", start, s_idx);
+  printf("Match: %s\n", input.str);
+  printf("       ");
+  if (s_idx == 0) {
+    for (int i = 0; i < input.len; i++) {
+      printf("~");
+    }
+    printf("\n");
+  } else {
+    for (int i = 0; i < start; i++)
+      printf(" ");
+    for (int i = 0; i < s_idx; i++)
+      printf("~");
+    printf("\n");
+  }
+}
 bool match_regex_anywhere(regex_e *regex, int size, String input) {
   int start = 0;
   int count = 0;
   int s_idx = 0;
+  bool flagStart = false;
+  bool flagEnd = false;
 
   if (regex[0].r_op == start_str) {
-    if (match_regex(&regex[1], size - 1, input, &s_idx) /*&& s_idx > 0*/) {
+    regex = &regex[1];
+    size--;
+    flagStart = true;
+  }
+  if (regex[size - 1].r_op == end_str) {
+    size--;
+    flagEnd = true;
+  }
+  if (flagStart || flagEnd) {
+    if (match_regex(regex, size, input, &s_idx) /*&& s_idx > 0*/) {
 
-      // printf("Match\n");
-      printf("start:%d-s_idx:%d\n", start, s_idx);
-      printf("Match: %s\n", input.str);
-      printf("       ");
-      if (s_idx == 0) {
-        for (int i = 0; i < input.len; i++) {
-          printf("~");
+      bool print = false;
+      if (flagStart == true) {
+        if (start == 0) {
+
+          print = true;
+        } else {
+          print = false;
         }
-        printf("\n");
-        return true;
       }
-      for (int i = 0; i < start; i++)
-        printf(" ");
-      for (int i = 0; i < s_idx; i++)
-        printf("~");
-      printf("\n");
-      return true;
+      if (flagEnd == true) {
+        if (s_idx == input.len - 1) {
+
+          print = true;
+        } else {
+          print = false;
+        }
+      }
+      if (print) {
+        print_match(start, s_idx, input);
+        return true;
+      } else {
+        printf("No match\n");
+        return false;
+      }
     } else {
       printf("No match\n");
       return false;
@@ -141,23 +177,7 @@ bool match_regex_anywhere(regex_e *regex, int size, String input) {
 
     if (match_regex(regex, size, sliced, &s_idx) /*&& s_idx > 0*/) {
       count++;
-      printf("start:%d-s_idx:%d\n", start, s_idx);
-      printf("Match: %s\n", input.str);
-      printf("       ");
-      if (s_idx == 0) {
-        for (int i = 0; i < input.len; i++) {
-          printf("~");
-        }
-        printf("\n");
-        // return true;
-      } else {
-        for (int i = 0; i < start; i++)
-          printf(" ");
-        for (int i = 0; i < s_idx; i++)
-          printf("~");
-        printf("\n");
-      }
-
+      print_match(start, s_idx, input);
       if (s_idx == 0) {
         s_idx++;
       }
@@ -327,6 +347,7 @@ String string_regex_op(regex_op r_op) {
     break;
   case 6:
     str_r_op = str_init("end_str", 15);
+    break;
   case 7:
     str_r_op = str_init("set", 15);
     break;
