@@ -20,8 +20,8 @@ int main(int argc, char **argv) {
     printf("%s-%s\n", list[i].str.str, string_regex_op(list[i].r_op).str);
   }
 
-  // bool r = match_regex_anywhere(list, size, input);
-  // printf("%d\n", r);
+  bool r = match_regex_anywhere(list, size, input);
+  printf("%d\n", r);
 
   return 0;
 }
