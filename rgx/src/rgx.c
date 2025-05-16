@@ -9,11 +9,9 @@ bool match_here(char c, regex_e re) {
     return c != '\0'; // accetta qualsiasi carattere tranne fine stringa
   }
   if (re.r_op == set){
-    printf("SET\n");
     int except_flag = str_containsr(re.str, "^", 2, NO_CASE_SENSITIVE);
     int rangeset_flag = str_containsr(re.str, "-", 2, NO_CASE_SENSITIVE);
     // int flag = true;
-    printf("except_flag: %d\n",except_flag);
     
 
     for(int i = except_flag == -1 ? 0 : 1; i < re.str.len; i++){
@@ -28,11 +26,9 @@ bool match_here(char c, regex_e re) {
         if(except_flag == -1){
           // printf("exceflag == -1\n");
           if(c >= ccurr && c <= ctmp){
-            printf("true\n");
             return true;
           }
         }else{
-          //TODO
           if(!(c<ccurr || c>ctmp)){
             //if the except is not fullfill
             return false;
@@ -45,10 +41,8 @@ bool match_here(char c, regex_e re) {
           }
         }else{
           if(c == re.str.str[i]){
-            printf("false\n");
             return false;
           }
-          printf("true\n");
         }
       }
     }
@@ -56,16 +50,13 @@ bool match_here(char c, regex_e re) {
     if(except_flag != -1){
       return true;
     }
-    // return flag;
     return false;
   }
   for (int i = 0; i < re.str.len; i++) {
     if (c == re.str.str[i]) {
-      // printf("TRUE\n");
       return true;
     }
   }
-  // printf("FALSE\n");
   return false;
 }
 bool match_regex(regex_e *regex, int size, String input, int *s_idx) {
@@ -96,10 +87,13 @@ bool match_regex(regex_e *regex, int size, String input, int *s_idx) {
         act = oneOrMore;
         r_idx++;
         break;
-      case alter:
-        act = one;
-        r_idx++;
-        break;
+      // case range:
+      //   r_idx++;
+      //   break;
+      // case alter:
+      //   act = one;
+      //   r_idx++;
+      //   break;
       default:
         act = one;
         break;
@@ -331,8 +325,6 @@ int parse_regex(String regex, regex_e **list, int *size) {
       }
       i--;
       r_op = set;
-      //TODO
-      //buffer = extend_set(String buffer);
       break;
     case '(':
       len++;
@@ -377,6 +369,9 @@ int parse_regex(String regex, regex_e **list, int *size) {
       }
       i--;
       r_op = range;
+      str_cat(&(*list)[(*size) - 1].str, buffer, -1);
+      (*list)[(*size) - 1].r_op = r_op;
+      
       break;
     default:
       len++;
@@ -386,10 +381,13 @@ int parse_regex(String regex, regex_e **list, int *size) {
       // return Err;
       break;
     }
-    (*size)++;
-    (*list) = realloc((*list), (*size) * sizeof(regex_e));
-    str_cpy(&(*list)[(*size) - 1].str, buffer);
-    (*list)[(*size) - 1].r_op = r_op;
+    if (r_op != range){
+      
+      (*size)++;
+      (*list) = realloc((*list), (*size) * sizeof(regex_e));
+      str_cpy(&(*list)[(*size) - 1].str, buffer);
+      (*list)[(*size) - 1].r_op = r_op;
+    }
   }
   return Ok;
 }

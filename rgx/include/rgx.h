@@ -28,7 +28,7 @@ typedef enum action {
   one = 1,
   zeroOrOne = 2,
   zeroOrMore = 3,
-  oneOrMore = 4
+  oneOrMore = 4,
 } action;
 
 typedef struct regex_e {
