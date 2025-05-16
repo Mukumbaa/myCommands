@@ -15,6 +15,7 @@ int main(int argc, char **argv) {
   if (ret == Err) {
     return -1;
   }
+  
   for (int i = 0; i < size; i++) {
     printf("%s-%s\n", list[i].str.str, string_regex_op(list[i].r_op).str);
   }

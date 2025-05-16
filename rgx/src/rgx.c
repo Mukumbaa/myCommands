@@ -1,11 +1,63 @@
 #include "../include/rgx.h"
 #include <complex.h>
+#include <stdio.h>
 
 bool match_here(char c, regex_e re) {
   // printf("HERE-%c-%s\n",c,re.str.str);
 
   if (re.r_op == dot) {
     return c != '\0'; // accetta qualsiasi carattere tranne fine stringa
+  }
+  if (re.r_op == set){
+    printf("SET\n");
+    int except_flag = str_containsr(re.str, "^", 2, NO_CASE_SENSITIVE);
+    int rangeset_flag = str_containsr(re.str, "-", 2, NO_CASE_SENSITIVE);
+    // int flag = true;
+    printf("except_flag: %d\n",except_flag);
+    
+
+    for(int i = except_flag == -1 ? 0 : 1; i < re.str.len; i++){
+      char ccurr = re.str.str[i];
+      char ctmp;
+      if (i+1 < re.str.len){
+        ctmp = re.str.str[i+1];
+      }
+      if(ctmp == '-'){
+        i+=2;
+        ctmp = re.str.str[i];
+        if(except_flag == -1){
+          // printf("exceflag == -1\n");
+          if(c >= ccurr && c <= ctmp){
+            printf("true\n");
+            return true;
+          }
+        }else{
+          //TODO
+          if(!(c<ccurr || c>ctmp)){
+            //if the except is not fullfill
+            return false;
+          }
+        }
+      }else{
+        if(except_flag == -1){
+          if(c == re.str.str[i]){
+            return true;
+          }
+        }else{
+          if(c == re.str.str[i]){
+            printf("false\n");
+            return false;
+          }
+          printf("true\n");
+        }
+      }
+    }
+    
+    if(except_flag != -1){
+      return true;
+    }
+    // return flag;
+    return false;
   }
   for (int i = 0; i < re.str.len; i++) {
     if (c == re.str.str[i]) {
@@ -55,8 +107,10 @@ bool match_regex(regex_e *regex, int size, String input, int *s_idx) {
     }
     int match = 0;
     if (act == one) {
-      if ((*s_idx) >= input.len)
+      if ((*s_idx) >= input.len){
+
         return false;
+      }
       if (match_here(input.str[(*s_idx)], curr)) {
         (*s_idx)++;
       } else {
@@ -71,12 +125,16 @@ bool match_regex(regex_e *regex, int size, String input, int *s_idx) {
 
       bool has_next = r_idx < size;
       regex_e next;
-      if (has_next)
+      if (has_next) {
+
         next = regex[r_idx];
+      }
 
       if (curr.r_op == dot) {
-        if (has_next == false)
+        if (has_next == false) {
+
           return true;
+        }
 
         while ((*s_idx) < input.len && match_here(input.str[(*s_idx)], curr)) {
           if (match_here(input.str[(*s_idx)], next)) {
@@ -87,6 +145,9 @@ bool match_regex(regex_e *regex, int size, String input, int *s_idx) {
 
       } else {
         while ((*s_idx) < input.len && match_here(input.str[(*s_idx)], curr)) {
+          if (has_next && match_here(input.str[(*s_idx)], next)) {
+            break;
+          }
           (*s_idx)++;
         }
       }
@@ -248,13 +309,17 @@ int parse_regex(String regex, regex_e **list, int *size) {
     case '[':
       len++;
       flag = false;
+      i++;
       old_i = i;
       str_char(&buffer, regex.str[i]);
       for (i = i + 1; i < regex.len && flag == false; i++) {
-        if (regex.str[i] == ']')
+        if (regex.str[i] == ']'){
           flag = true;
+        }
         len++;
-        str_char(&buffer, regex.str[i]);
+        if (flag == false){
+          str_char(&buffer, regex.str[i]);
+        }
       }
       if (flag == false) {
         printf("Not closing set at index: %d\n%s\n", old_i, regex.str);
@@ -266,6 +331,8 @@ int parse_regex(String regex, regex_e **list, int *size) {
       }
       i--;
       r_op = set;
+      //TODO
+      //buffer = extend_set(String buffer);
       break;
     case '(':
       len++;
