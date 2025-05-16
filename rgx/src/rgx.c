@@ -46,6 +46,9 @@ bool match_here(String input, int *s_idx, regex_e re) {
         }
       }
     }
+    if (re.r_op == range){
+      
+    }
     
     if(except_flag != -1){
       return true;
@@ -150,8 +153,17 @@ bool match_regex(regex_e *regex, int size, String input, int *s_idx) {
       if ((*s_idx) >= input.len || !match_here(input, s_idx, curr)) {
         return false;
       }
+      bool has_next = r_idx < size;
+      regex_e next;
+      if (has_next) {
+        next = regex[r_idx];
+      }
+      
       (*s_idx)++;
       while ((*s_idx) < input.len && match_here(input, s_idx,curr)) {
+        if (has_next && match_here(input, s_idx, next)) {
+          break;
+        }
         (*s_idx)++;
       }
     }
