@@ -4,6 +4,7 @@ SRC=$(wildcard src/*.c)
 OBJ = $(patsubst src/%.c, build/%.o, $(SRC))
 TARGET = libstr
 
+
 ifeq ($(OS),Windows_NT)
 	SHELL := cmd
 	RM = if exist build\\* del /Q build\\*

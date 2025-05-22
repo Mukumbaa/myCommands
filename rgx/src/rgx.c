@@ -6,51 +6,50 @@ bool match_here(String input, int *s_idx, regex_e re) {
   // printf("HERE-%c-%s\n",c,re.str.str);
 
   if (re.r_op == dot) {
-    return input.str[(*s_idx)] != '\0'; // accetta qualsiasi carattere tranne fine stringa
+    return input.str[(*s_idx)] !=
+           '\0'; // accetta qualsiasi carattere tranne fine stringa
   }
-  if (re.r_op == set){
+  if (re.r_op == set) {
     int except_flag = str_containsr(re.str, "^", 2, NO_CASE_SENSITIVE);
     int rangeset_flag = str_containsr(re.str, "-", 2, NO_CASE_SENSITIVE);
     // int flag = true;
-    
 
-    for(int i = except_flag == -1 ? 0 : 1; i < re.str.len; i++){
+    for (int i = except_flag == -1 ? 0 : 1; i < re.str.len; i++) {
       char ccurr = re.str.str[i];
       char ctmp;
-      if (i+1 < re.str.len){
-        ctmp = re.str.str[i+1];
+      if (i + 1 < re.str.len) {
+        ctmp = re.str.str[i + 1];
       }
-      if(ctmp == '-'){
-        i+=2;
+      if (ctmp == '-') {
+        i += 2;
         ctmp = re.str.str[i];
-        if(except_flag == -1){
+        if (except_flag == -1) {
           // printf("exceflag == -1\n");
-          if(input.str[(*s_idx)] >= ccurr &&input.str[(*s_idx)]<= ctmp){
+          if (input.str[(*s_idx)] >= ccurr && input.str[(*s_idx)] <= ctmp) {
             return true;
           }
-        }else{
-          if(!(input.str[(*s_idx)]<ccurr || input.str[(*s_idx)]>ctmp)){
-            //if the except is not fullfill
+        } else {
+          if (!(input.str[(*s_idx)] < ccurr || input.str[(*s_idx)] > ctmp)) {
+            // if the except is not fullfill
             return false;
           }
         }
-      }else{
-        if(except_flag == -1){
-          if(input.str[(*s_idx)] == re.str.str[i]){
+      } else {
+        if (except_flag == -1) {
+          if (input.str[(*s_idx)] == re.str.str[i]) {
             return true;
           }
-        }else{
-          if(input.str[(*s_idx)] == re.str.str[i]){
+        } else {
+          if (input.str[(*s_idx)] == re.str.str[i]) {
             return false;
           }
         }
       }
     }
-    if (re.r_op == range){
-      
+    if (re.r_op == range) {
     }
-    
-    if(except_flag != -1){
+
+    if (except_flag != -1) {
       return true;
     }
     return false;
@@ -104,11 +103,11 @@ bool match_regex(regex_e *regex, int size, String input, int *s_idx) {
     }
     int match = 0;
     if (act == one) {
-      if ((*s_idx) >= input.len){
+      if ((*s_idx) >= input.len) {
 
         return false;
       }
-      if (match_here(input, s_idx,curr)) {
+      if (match_here(input, s_idx, curr)) {
         (*s_idx)++;
       } else {
         return false;
@@ -158,9 +157,9 @@ bool match_regex(regex_e *regex, int size, String input, int *s_idx) {
       if (has_next) {
         next = regex[r_idx];
       }
-      
+
       (*s_idx)++;
-      while ((*s_idx) < input.len && match_here(input, s_idx,curr)) {
+      while ((*s_idx) < input.len && match_here(input, s_idx, curr)) {
         if (has_next && match_here(input, s_idx, next)) {
           break;
         }
@@ -319,11 +318,11 @@ int parse_regex(String regex, regex_e **list, int *size) {
       old_i = i;
       str_char(&buffer, regex.str[i]);
       for (i = i + 1; i < regex.len && flag == false; i++) {
-        if (regex.str[i] == ']'){
+        if (regex.str[i] == ']') {
           flag = true;
         }
         len++;
-        if (flag == false){
+        if (flag == false) {
           str_char(&buffer, regex.str[i]);
         }
       }
@@ -383,7 +382,7 @@ int parse_regex(String regex, regex_e **list, int *size) {
       r_op = range;
       str_cat(&(*list)[(*size) - 1].str, buffer, -1);
       (*list)[(*size) - 1].r_op = r_op;
-      
+
       break;
     default:
       len++;
@@ -393,8 +392,8 @@ int parse_regex(String regex, regex_e **list, int *size) {
       // return Err;
       break;
     }
-    if (r_op != range){
-      
+    if (r_op != range) {
+
       (*size)++;
       (*list) = realloc((*list), (*size) * sizeof(regex_e));
       str_cpy(&(*list)[(*size) - 1].str, buffer);
