@@ -14,7 +14,7 @@ ifeq ($(OS),Windows_NT)
 	CLEAN_LIB = if exist $(TARGET).a del $(TARGET).a
 	MKDIR = if not exist build mkdir build
 	MKDIR_SHIP = if not exist ship mkdir ship
-	COPY_A_SHIP = copy $(TARGET).a ship\\$(TARGET).a
+	COPY_A_SHIP = copy $(TARGET).a ship\\$(TARGET)_win.a
 	COPY_H_SHIP = copy include\\$(TARGET).h ship\\$(TARGET).h
 	EXE = .exe
 else
@@ -25,7 +25,7 @@ else
 	CLEAN_O = rm $(TARGET).o
 	MKDIR = mkdir -p build
 	MKDIR_SHIP = mkdir -p ship
-	COPY_A_SHIP = cp $(TARGET).a ship/$(TARGET).a
+	COPY_A_SHIP = cp $(TARGET).a ship/$(TARGET)_linux.a
 	COPY_H_SHIP = cp include/$(TARGET).h ship/$(TARGET).h
 	EXE =
 endif

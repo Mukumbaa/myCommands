@@ -2,10 +2,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+
 int main(int argc, char **argv) {
 
-  String regex = str_init(argv[1], 100);
-  String input = str_init(argv[2], 100);
+  String regex = str_init(argv[argc - 2], 100);
+  String input = str_init(argv[argc - 1], 100);
   int ret;
   int size = 0;
   regex_e *list = NULL;

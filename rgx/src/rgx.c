@@ -2,16 +2,16 @@
 #include <complex.h>
 #include <stdio.h>
 
-bool match_here(String input, int *s_idx, regex_e re) {
+bool match_here(String input, int s_idx, regex_e re) {
   // printf("HERE-%c-%s\n",c,re.str.str);
 
   if (re.r_op == dot) {
-    return input.str[(*s_idx)] !=
+    return input.str[(s_idx)] !=
            '\0'; // accetta qualsiasi carattere tranne fine stringa
   }
   if (re.r_op == set) {
     int except_flag = str_containsr(re.str, "^", 2, NO_CASE_SENSITIVE);
-    int rangeset_flag = str_containsr(re.str, "-", 2, NO_CASE_SENSITIVE);
+    // int rangeset_flag = str_containsr(re.str, "-", 2, NO_CASE_SENSITIVE);
     // int flag = true;
 
     for (int i = except_flag == -1 ? 0 : 1; i < re.str.len; i++) {
@@ -25,22 +25,22 @@ bool match_here(String input, int *s_idx, regex_e re) {
         ctmp = re.str.str[i];
         if (except_flag == -1) {
           // printf("exceflag == -1\n");
-          if (input.str[(*s_idx)] >= ccurr && input.str[(*s_idx)] <= ctmp) {
+          if (input.str[(s_idx)] >= ccurr && input.str[(s_idx)] <= ctmp) {
             return true;
           }
         } else {
-          if (!(input.str[(*s_idx)] < ccurr || input.str[(*s_idx)] > ctmp)) {
+          if (!(input.str[(s_idx)] < ccurr || input.str[(s_idx)] > ctmp)) {
             // if the except is not fullfill
             return false;
           }
         }
       } else {
         if (except_flag == -1) {
-          if (input.str[(*s_idx)] == re.str.str[i]) {
+          if (input.str[(s_idx)] == re.str.str[i]) {
             return true;
           }
         } else {
-          if (input.str[(*s_idx)] == re.str.str[i]) {
+          if (input.str[(s_idx)] == re.str.str[i]) {
             return false;
           }
         }
@@ -55,7 +55,7 @@ bool match_here(String input, int *s_idx, regex_e re) {
     return false;
   }
   for (int i = 0; i < re.str.len; i++) {
-    if (input.str[(*s_idx)] == re.str.str[i]) {
+    if (input.str[(s_idx)] == re.str.str[i]) {
       return true;
     }
   }
@@ -101,24 +101,22 @@ bool match_regex(regex_e *regex, int size, String input, int *s_idx) {
         break;
       }
     }
-    int match = 0;
+    // int match = 0;
     if (act == one) {
       if ((*s_idx) >= input.len) {
-
         return false;
       }
-      if (match_here(input, s_idx, curr)) {
+      if (match_here(input, (*s_idx), curr)) {
         (*s_idx)++;
       } else {
         return false;
       }
     } else if (act == zeroOrOne) {
-      if ((*s_idx) < input.len && match_here(input, s_idx, curr)) {
+      if ((*s_idx) < input.len && match_here(input, (*s_idx), curr)) {
         (*s_idx)++;
       }
       // altrimenti, va bene anche 0 match
     } else if (act == zeroOrMore) {
-
       bool has_next = r_idx < size;
       regex_e next;
       if (has_next) {
@@ -127,29 +125,31 @@ bool match_regex(regex_e *regex, int size, String input, int *s_idx) {
       }
 
       if (curr.r_op == dot) {
-        if (has_next == false) {
-
-          return true;
-        }
-
-        while ((*s_idx) < input.len && match_here(input, s_idx, curr)) {
-          if (match_here(input, s_idx, next)) {
-            break;
+        while ((*s_idx) < input.len && match_here(input, (*s_idx), curr)) {
+          if (has_next && match_here(input, (*s_idx), next)) {
+            // if the next char does not match any more the next regex op, brek
+            if (match_here(input, (*s_idx) + 1, next) == false){
+              break;
+            }
           }
           (*s_idx)++;
         }
 
-      } else {
-        while ((*s_idx) < input.len && match_here(input, s_idx, curr)) {
-          if (has_next && match_here(input, s_idx, next)) {
-            break;
+      }
+      else {
+        while ((*s_idx) < input.len && match_here(input, (*s_idx), curr)) {
+          if (has_next && match_here(input, (*s_idx), next)) {
+            // if the next char does not match any more the next regex op, brek
+            if (match_here(input, (*s_idx) + 1, next) == false){
+              break;
+            }
           }
           (*s_idx)++;
         }
       }
 
     } else if (act == oneOrMore) {
-      if ((*s_idx) >= input.len || !match_here(input, s_idx, curr)) {
+      if ((*s_idx) >= input.len || !match_here(input, (*s_idx), curr)) {
         return false;
       }
       bool has_next = r_idx < size;
@@ -159,11 +159,27 @@ bool match_regex(regex_e *regex, int size, String input, int *s_idx) {
       }
 
       (*s_idx)++;
-      while ((*s_idx) < input.len && match_here(input, s_idx, curr)) {
-        if (has_next && match_here(input, s_idx, next)) {
-          break;
+      if (curr.r_op == dot) {
+        while ((*s_idx) < input.len && match_here(input, (*s_idx), curr)) {
+          if (has_next && match_here(input, (*s_idx), next)) {
+            // if the next char does not match any more the next regex op, brek
+            if (match_here(input, (*s_idx) + 1, next) == false){
+              break;
+            }
+          }
+          (*s_idx)++;
         }
-        (*s_idx)++;
+
+      } else {
+        while ((*s_idx) < input.len && match_here(input, (*s_idx), curr)) {
+          if (has_next && match_here(input, (*s_idx), next)) {
+            // if the next char does not match any more the next regex op, brek
+            if (match_here(input, (*s_idx) + 1, next) == false){
+              break;
+            }
+          }
+          (*s_idx)++;
+        }
       }
     }
   }
@@ -243,7 +259,10 @@ bool match_regex_anywhere(regex_e *regex, int size, String input) {
 
     if (match_regex(regex, size, sliced, &s_idx) /*&& s_idx > 0*/) {
       count++;
-      print_match(start, s_idx, input);
+      //ADDED IF
+      if(s_idx != 0){
+        print_match(start, s_idx, input);
+      }
       if (s_idx == 0) {
         s_idx++;
       }
@@ -306,6 +325,7 @@ int parse_regex(String regex, regex_e **list, int *size) {
       len++;
       str_char(&buffer, '|');
       r_op = alter;
+      break;
     case '\\':
       len++;
       str_char(&buffer, '\\');
