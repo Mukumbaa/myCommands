@@ -118,11 +118,6 @@ bool match_regex(regex_e *regex, int size, String input, int *s_idx) {
       // altrimenti, va bene anche 0 match
     } else if (act == zeroOrMore) {
 
-      //TODO
-      // risolvere questo:
-      // .\rgx_win.exe "[abc]*z[abc]*abc" "acbacbabcbacbazabcbbbbbbbb"
-      // NO MATCH
-      
       int start_s_idx = (*s_idx);
        
       while ((*s_idx) < input.len && match_here(input, (*s_idx), curr)) {
@@ -146,44 +141,27 @@ bool match_regex(regex_e *regex, int size, String input, int *s_idx) {
       if ((*s_idx) >= input.len || !match_here(input, (*s_idx), curr)) {
         return false;
       }
-      bool has_next = r_idx < size;
-      regex_e next;
-      if (has_next) {
-        next = regex[r_idx];
-      }
 
       (*s_idx)++;
+      
+      int start_s_idx = (*s_idx);
+       
       while ((*s_idx) < input.len && match_here(input, (*s_idx), curr)) {
-        if (has_next && match_here(input, (*s_idx), next)) {
-          // if the next char does not match any more the next regex op, brek
-          if (match_here(input, (*s_idx) + 1, next) == false){
-            break;
-          }
-        }
         (*s_idx)++;
       }
-      // if (curr.r_op == dot) {
-      //   while ((*s_idx) < input.len && match_here(input, (*s_idx), curr)) {
-      //     if (has_next && match_here(input, (*s_idx), next)) {
-      //       // if the next char does not match any more the next regex op, brek
-      //       if (match_here(input, (*s_idx) + 1, next) == false){
-      //         break;
-      //       }
-      //     }
-      //     (*s_idx)++;
-      //   }
 
-      // } else {
-      //   while ((*s_idx) < input.len && match_here(input, (*s_idx), curr)) {
-      //     if (has_next && match_here(input, (*s_idx), next)) {
-      //       // if the next char does not match any more the next regex op, brek
-      //       if (match_here(input, (*s_idx) + 1, next) == false){
-      //         break;
-      //       }
-      //     }
-      //     (*s_idx)++;
-      //   }
-      // }
+      int last_s_idx = (*s_idx);
+      
+      for(int i = last_s_idx; i >= start_s_idx; i--){
+        int temp_s_idx = i;
+        String slice = {.str = &input.str[i], .len = input.len - i};
+        
+        if (match_regex(&regex[r_idx], size - r_idx, slice, &temp_s_idx)){
+          (*s_idx) = i + temp_s_idx;
+          return true;
+        }
+      }
+      return false;
     }
   }
   // return s_idx == input.len;
