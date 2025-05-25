@@ -1,0 +1,122 @@
+
+bool match_regex(regex_e *regex, int size, String input, int *s_idx) {
+
+  int r_idx = 0;
+  (*s_idx) = 0;
+  int n_loop = 0;
+
+  while (r_idx < size) {
+    n_loop++;
+
+    regex_e curr = regex[r_idx];
+    action act = one;
+    r_idx++;
+
+    if (r_idx < size) {
+
+      switch (regex[r_idx].r_op) {
+      case star:
+        act = zeroOrMore;
+        r_idx++;
+        break;
+      case question:
+        act = zeroOrOne;
+        r_idx++;
+        break;
+      case plus:
+        act = oneOrMore;
+        r_idx++;
+        break;
+      // case range:
+      //   r_idx++;
+      //   break;
+      // case alter:
+      //   act = one;
+      //   r_idx++;
+      //   break;
+      default:
+        act = one;
+        break;
+      }
+    }
+    // int match = 0;
+    if (act == one) {
+      if ((*s_idx) >= input.len) {
+        return false;
+      }
+      if (match_here(input, (*s_idx), curr)) {
+        (*s_idx)++;
+      } else {
+        return false;
+      }
+    } else if (act == zeroOrOne) {
+      if ((*s_idx) < input.len && match_here(input, (*s_idx), curr)) {
+        (*s_idx)++;
+      }
+      // altrimenti, va bene anche 0 match
+    } else if (act == zeroOrMore) {
+            
+      bool has_next = r_idx < size;
+      regex_e next;
+      if (has_next) {
+        next = regex[r_idx];
+      }
+      if (curr.r_op == dot) {
+        while ((*s_idx) < input.len && match_here(input, (*s_idx), curr)) {
+          if (has_next && match_here(input, (*s_idx), next)) {
+            // if the next char does not match any more the next regex op, brek
+            if (match_here(input, (*s_idx) + 1, next) == false){
+              break;
+            }
+          }
+          (*s_idx)++;
+        }
+      }
+      else {
+        while ((*s_idx) < input.len && match_here(input, (*s_idx), curr)) {
+          if (has_next && match_here(input, (*s_idx), next)) {
+            // if the next char does not match any more the next regex op, brek
+            if (match_here(input, (*s_idx) + 1, next) == false){
+              break;
+            }
+          }
+          (*s_idx)++;
+        }
+      }
+    } else if (act == oneOrMore) {
+      if ((*s_idx) >= input.len || !match_here(input, (*s_idx), curr)) {
+        return false;
+      }
+      bool has_next = r_idx < size;
+      regex_e next;
+      if (has_next) {
+        next = regex[r_idx];
+      }
+
+      (*s_idx)++;
+      if (curr.r_op == dot) {
+        while ((*s_idx) < input.len && match_here(input, (*s_idx), curr)) {
+          if (has_next && match_here(input, (*s_idx), next)) {
+            // if the next char does not match any more the next regex op, brek
+            if (match_here(input, (*s_idx) + 1, next) == false){
+              break;
+            }
+          }
+          (*s_idx)++;
+        }
+      } else {
+        while ((*s_idx) < input.len && match_here(input, (*s_idx), curr)) {
+          if (has_next && match_here(input, (*s_idx), next)) {
+            // if the next char does not match any more the next regex op, brek
+            if (match_here(input, (*s_idx) + 1, next) == false){
+              break;
+            }
+          }
+          (*s_idx)++;
+        }
+      }
+    }
+  }
+  // return s_idx == input.len;
+  return true;
+}

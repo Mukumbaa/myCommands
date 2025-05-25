@@ -29,7 +29,6 @@ int main(int argc, char **argv) {
   bool r = match_regex_anywhere(list, size, input);
   end = clock();
   time = ((double) end - start) /CLOCKS_PER_SEC;
-  
   printf("%d\n", r);
   printf("match time: %f\n",time);
   return 0;
