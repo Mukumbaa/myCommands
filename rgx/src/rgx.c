@@ -1,6 +1,19 @@
 #include "../include/rgx.h"
-#include <complex.h>
-#include <stdio.h>
+
+// bool match_set(String input, int s_idx, regex_e re, bool except_flag){
+
+//   int start_r_idx = except_flag ? 1 : 0;
+  
+//   for(int i = start_r_idx; i < re.str.len; i++){
+    
+//   }
+  
+
+
+    
+
+//   return true;
+// }
 
 bool match_here(String input, int s_idx, regex_e re) {
   // printf("HERE-%c-%s\n",c,re.str.str);
@@ -10,50 +23,113 @@ bool match_here(String input, int s_idx, regex_e re) {
            '\0'; // accetta qualsiasi carattere tranne fine stringa
   }
   if (re.r_op == set) {
-    int except_flag = str_containsr(re.str, "^", 2, NO_CASE_SENSITIVE);
-    // int rangeset_flag = str_containsr(re.str, "-", 2, NO_CASE_SENSITIVE);
-    // int flag = true;
 
-    for (int i = except_flag == -1 ? 0 : 1; i < re.str.len; i++) {
-      char ccurr = re.str.str[i];
-      char ctmp;
-      if (i + 1 < re.str.len) {
-        ctmp = re.str.str[i + 1];
+    bool except_flag = re.str.str[0] == '^';
+    int start_r_idx = 0;
+
+    if (except_flag){
+      start_r_idx = 1;
+    }
+    
+    int size = 1;
+    String *split = malloc(size * sizeof(String));
+    split[0] = str_init("",1);
+    for (int i = start_r_idx; i < re.str.len; i++){
+      if(re.str.str[i] == '\\'){
+        i++;
+        if(re.str.str[i] == 'w'){
+          size++;
+          split = realloc(split, size*sizeof(String));
+          split[size - 1] = str_init("a-zA-Z0-9_", 15);
+        }else if(re.str.str[i] == 'W'){
+          size++;
+          split = realloc(split, size*sizeof(String));
+          split[size - 1] = str_init("^a-zA-Z0-9_", 15);
+        }else if(re.str.str[i] == 'd'){
+          size++;
+          split = realloc(split, size*sizeof(String));
+          split[size - 1] = str_init("0-9", 15);
+        }else if(re.str.str[i] == 'D'){
+          size++;
+          split = realloc(split, size*sizeof(String));
+          split[size - 1] = str_init("^0-9", 15);
+        }else{
+          str_char(&split[0], re.str.str[i]);
+        }
+      }else{
+        str_char(&split[0], re.str.str[i]);
       }
-      if (ctmp == '-') {
-        i += 2;
-        ctmp = re.str.str[i];
-        if (except_flag == -1) {
-          // printf("exceflag == -1\n");
-          if (input.str[(s_idx)] >= ccurr && input.str[(s_idx)] <= ctmp) {
-            return true;
+    }
+    if(split[0].len == 0){
+      split = &split[1];
+      size--;
+    }
+    // printf("SPLIT\n");
+    // for(int i = 0; i < size; i++){
+    //   printf("%s\n",split[i].str);
+    // }
+    // printf("FINESPLIT\n");
+    bool validate_set = false;
+    for (int i = 0; i < size; i++){
+      // printf("primo for\n");
+      bool single_set;
+      
+      bool flag_inner_except = false;
+      flag_inner_except = split[i].str[0] == '^' ? true : false;
+      start_r_idx = flag_inner_except ? 1 : 0;
+
+      if (except_flag == flag_inner_except){
+        single_set = false;
+      }else{
+        single_set = true;
+      }
+      
+      // printf("%s-%d\n",split[i].str,split[i].len);      
+      for (int j = start_r_idx; j < split[i].len; j++){
+        char ccurr = split[i].str[j];
+        char ctmp = ' ';
+        // printf("ccurr %c\n",ccurr);
+        if (i + 1 < split[i].len) {
+          ctmp = split[i].str[j+1];
+        }
+        //TODO
+        //SET
+        if (ctmp == '-') {
+          // printf("range\n");
+          j += 2;
+          ctmp = split[i].str[j];
+          if (except_flag == flag_inner_except){
+            if(input.str[s_idx] >= ccurr && input.str[s_idx] <= ctmp){
+              single_set = single_set || true;
+            }
+          }else{
+            if(input.str[s_idx] >= ccurr && input.str[s_idx] <= ctmp){
+              single_set = single_set && false;
+            }
           }
-        } else {
-          if (!(input.str[(s_idx)] < ccurr || input.str[(s_idx)] > ctmp)) {
-            // if the except is not fullfill
-            return false;
+          
+        }else{
+          // printf("no range\n");
+          if (except_flag == flag_inner_except){
+            if (input.str[s_idx] == ccurr){
+              // printf("e:%c-%c\n",input.str[s_idx],ccurr);
+              single_set = single_set || true;
+            }
+          }else{
+            if (input.str[s_idx] == ccurr){
+              // printf("ne:%c-%c\n",input.str[s_idx],ccurr);
+              single_set = single_set && false;
+            }
           }
         }
-      } else {
-        if (except_flag == -1) {
-          if (input.str[(s_idx)] == re.str.str[i]) {
-            return true;
-          }
-        } else {
-          if (input.str[(s_idx)] == re.str.str[i]) {
-            return false;
-          }
-        }
       }
+      validate_set = validate_set || single_set;
     }
-    if (re.r_op == range) {
-    }
-
-    if (except_flag != -1) {
-      return true;
-    }
-    return false;
+    // printf("fuori\n");
+    return validate_set;
   }
+  
+
   for (int i = 0; i < re.str.len; i++) {
     if (input.str[(s_idx)] == re.str.str[i]) {
       return true;
@@ -116,17 +192,22 @@ bool match_regex(regex_e *regex, int size, String input, int *s_idx) {
         (*s_idx)++;
       }
       // altrimenti, va bene anche 0 match
-    } else if (act == zeroOrMore) {
+    } else if (act == zeroOrMore || act == oneOrMore) {
+
+      if(act == oneOrMore){
+        if ((*s_idx) >= input.len || !match_here(input, (*s_idx), curr)) {
+          return false;
+        }
+        (*s_idx)++;
+      }
 
       int start_s_idx = (*s_idx);
-       
+
       while ((*s_idx) < input.len && match_here(input, (*s_idx), curr)) {
         (*s_idx)++;
       }
 
-      int last_s_idx = (*s_idx);
-      
-      for(int i = last_s_idx; i >= start_s_idx; i--){
+      for(int i = (*s_idx); i >= start_s_idx; i--){
         int temp_s_idx = i;
         String slice = {.str = &input.str[i], .len = input.len - i};
         
@@ -137,32 +218,27 @@ bool match_regex(regex_e *regex, int size, String input, int *s_idx) {
       }
       return false;
 
-    } else if (act == oneOrMore) {
-      if ((*s_idx) >= input.len || !match_here(input, (*s_idx), curr)) {
-        return false;
-      }
-
-      (*s_idx)++;
-      
-      int start_s_idx = (*s_idx);
-       
-      while ((*s_idx) < input.len && match_here(input, (*s_idx), curr)) {
-        (*s_idx)++;
-      }
-
-      int last_s_idx = (*s_idx);
-      
-      for(int i = last_s_idx; i >= start_s_idx; i--){
-        int temp_s_idx = i;
-        String slice = {.str = &input.str[i], .len = input.len - i};
-        
-        if (match_regex(&regex[r_idx], size - r_idx, slice, &temp_s_idx)){
-          (*s_idx) = i + temp_s_idx;
-          return true;
-        }
-      }
-      return false;
     }
+    //  else if (act == oneOrMore) {
+    //   if ((*s_idx) >= input.len || !match_here(input, (*s_idx), curr)) {
+    //     return false;
+    //   }
+    //   (*s_idx)++;
+    //   int start_s_idx = (*s_idx);
+    //   while ((*s_idx) < input.len && match_here(input, (*s_idx), curr)) {
+    //     (*s_idx)++;
+    //   }
+    //   int last_s_idx = (*s_idx);
+    //   for(int i = last_s_idx; i >= start_s_idx; i--){
+    //     int temp_s_idx = i;
+    //     String slice = {.str = &input.str[i], .len = input.len - i};
+    //     if (match_regex(&regex[r_idx], size - r_idx, slice, &temp_s_idx)){
+    //       (*s_idx) = i + temp_s_idx;
+    //       return true;
+    //     }
+    //   }
+    //   return false;
+    // }
   }
   // return s_idx == input.len;
   return true;
@@ -310,21 +386,41 @@ int parse_regex(String regex, regex_e **list, int *size) {
       if (i + 1 < regex.len){
         i++;
       }
-      str_char(&buffer, regex.str[i]);
-      r_op = charr;
+      if (regex.str[i] == 'w'){
+        str_catr(&buffer, "a-zA-Z0-9_",15);
+        r_op = set;
+      }
+      else if (regex.str[i] == 'W'){
+        str_catr(&buffer, "^a-zA-Z0-9_",15);
+        r_op = set;
+      }
+      else if (regex.str[i] == 'd'){
+        str_catr(&buffer, "0-9",15);
+        r_op = set;
+      }
+      else if (regex.str[i] == 'D'){
+        str_catr(&buffer, "^0-9",15);
+        r_op = set;
+      }
+      else{
+        str_char(&buffer, regex.str[i]);
+        r_op = charr;
+      }
       break;
     case '[':
       len++;
       flag = false;
       i++;
       old_i = i;
-      str_char(&buffer, regex.str[i]);
-      for (i = i + 1; i < regex.len && flag == false; i++) {
+      // str_char(&buffer, regex.str[i]);
+      for (i = i; i < regex.len && flag == false; i++) {
+        // printf("set: %c\n",regex.str[i]);
         if (regex.str[i] == ']') {
           flag = true;
         }
         len++;
         if (flag == false) {
+
           str_char(&buffer, regex.str[i]);
         }
       }

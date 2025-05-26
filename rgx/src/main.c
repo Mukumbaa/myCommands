@@ -23,13 +23,13 @@ int main(int argc, char **argv) {
   printf("parse time: %f\n",time);
   for (int i = 0; i < size; i++) {
     printf("%s-%s\n", list[i].str.str, string_regex_op(list[i].r_op).str);
-  }
+}
 
   start = clock();
-  bool r = match_regex_anywhere(list, size, input);
+  /*bool r = */match_regex_anywhere(list, size, input);
   end = clock();
   time = ((double) end - start) /CLOCKS_PER_SEC;
-  printf("%d\n", r);
+  // printf("%d\n", r);
   printf("match time: %f\n",time);
   return 0;
 }

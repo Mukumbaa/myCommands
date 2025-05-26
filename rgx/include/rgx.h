@@ -3,6 +3,7 @@
 
 #include "../include/libstr.h"
 #include <stdbool.h>
+#include <stdio.h>
 
 typedef enum ret {
   Ok = 0,
