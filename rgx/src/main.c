@@ -1,4 +1,4 @@
-#include "../include/rgx.h" //libstr.h stdbool.h
+#include "../include/rgx.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>

@@ -1,20 +1,5 @@
 #include "../include/rgx.h"
 
-// bool match_set(String input, int s_idx, regex_e re, bool except_flag){
-
-//   int start_r_idx = except_flag ? 1 : 0;
-  
-//   for(int i = start_r_idx; i < re.str.len; i++){
-    
-//   }
-  
-
-
-    
-
-//   return true;
-// }
-
 bool match_here(String input, int s_idx, regex_e re) {
   // printf("HERE-%c-%s\n",c,re.str.str);
 
@@ -71,7 +56,6 @@ bool match_here(String input, int s_idx, regex_e re) {
     // printf("FINESPLIT\n");
     bool validate_set = false;
     for (int i = 0; i < size; i++){
-      // printf("primo for\n");
       bool single_set;
       
       bool flag_inner_except = false;
@@ -84,20 +68,16 @@ bool match_here(String input, int s_idx, regex_e re) {
         single_set = true;
       }
       
-      // printf("%s-%d\n",split[i].str,split[i].len);      
       for (int j = start_r_idx; j < split[i].len; j++){
         char ccurr = split[i].str[j];
         char ctmp = ' ';
-        // printf("ccurr %c\n",ccurr);
         if (i + 1 < split[i].len) {
           ctmp = split[i].str[j+1];
         }
-        //TODO
-        //SET
         if (ctmp == '-') {
-          // printf("range\n");
           j += 2;
           ctmp = split[i].str[j];
+
           if (except_flag == flag_inner_except){
             if(input.str[s_idx] >= ccurr && input.str[s_idx] <= ctmp){
               single_set = single_set || true;
@@ -109,23 +89,19 @@ bool match_here(String input, int s_idx, regex_e re) {
           }
           
         }else{
-          // printf("no range\n");
           if (except_flag == flag_inner_except){
             if (input.str[s_idx] == ccurr){
-              // printf("e:%c-%c\n",input.str[s_idx],ccurr);
               single_set = single_set || true;
             }
           }else{
             if (input.str[s_idx] == ccurr){
-              // printf("ne:%c-%c\n",input.str[s_idx],ccurr);
               single_set = single_set && false;
             }
           }
-        }
-      }
+        } // if | else
+      } // second for
       validate_set = validate_set || single_set;
-    }
-    // printf("fuori\n");
+    } // first for
     return validate_set;
   }
   
@@ -177,7 +153,6 @@ bool match_regex(regex_e *regex, int size, String input, int *s_idx) {
         break;
       }
     }
-    // int match = 0;
     if (act == one) {
       if ((*s_idx) >= input.len) {
         return false;
@@ -219,26 +194,6 @@ bool match_regex(regex_e *regex, int size, String input, int *s_idx) {
       return false;
 
     }
-    //  else if (act == oneOrMore) {
-    //   if ((*s_idx) >= input.len || !match_here(input, (*s_idx), curr)) {
-    //     return false;
-    //   }
-    //   (*s_idx)++;
-    //   int start_s_idx = (*s_idx);
-    //   while ((*s_idx) < input.len && match_here(input, (*s_idx), curr)) {
-    //     (*s_idx)++;
-    //   }
-    //   int last_s_idx = (*s_idx);
-    //   for(int i = last_s_idx; i >= start_s_idx; i--){
-    //     int temp_s_idx = i;
-    //     String slice = {.str = &input.str[i], .len = input.len - i};
-    //     if (match_regex(&regex[r_idx], size - r_idx, slice, &temp_s_idx)){
-    //       (*s_idx) = i + temp_s_idx;
-    //       return true;
-    //     }
-    //   }
-    //   return false;
-    // }
   }
   // return s_idx == input.len;
   return true;
