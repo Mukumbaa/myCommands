@@ -30,6 +30,7 @@ typedef enum action {
   zeroOrOne = 2,
   zeroOrMore = 3,
   oneOrMore = 4,
+  inRange = 5,
 } action;
 
 typedef struct regex_e {

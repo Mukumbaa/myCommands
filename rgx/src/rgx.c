@@ -1,5 +1,19 @@
 #include "../include/rgx.h"
 
+int getNumber(String str)
+{
+    int number = 0.0;
+    int pos = 0;
+    if(str.str[pos] == '-'){
+      return -1;
+    }
+    while(str.str[pos] >= '0' && str.str[pos] <= '9')
+    {
+        number = number * 10 + str.str[pos] - '0';
+        pos++;
+    }
+    return number;
+}
 bool match_here(String input, int s_idx, regex_e re) {
   // printf("HERE-%c-%s\n",c,re.str.str);
 
@@ -126,6 +140,11 @@ bool match_regex(regex_e *regex, int size, String input, int *s_idx) {
     action act = one;
     r_idx++;
 
+    // if (regex[r_idx].r_op == range){
+    //  return false; 
+    // }
+
+    
     if (r_idx < size) {
 
       switch (regex[r_idx].r_op) {
@@ -141,9 +160,10 @@ bool match_regex(regex_e *regex, int size, String input, int *s_idx) {
         act = oneOrMore;
         r_idx++;
         break;
-      // case range:
-      //   r_idx++;
-      //   break;
+      case range:
+        act = inRange;
+        r_idx++;
+        break;
       // case alter:
       //   act = one;
       //   r_idx++;
@@ -193,6 +213,44 @@ bool match_regex(regex_e *regex, int size, String input, int *s_idx) {
       }
       return false;
 
+    }else if(act == inRange){
+
+      String range = str_init(&regex[r_idx - 1].str.str[1], regex[r_idx - 1].str.len - 2);
+      String *split;
+      int dim = str_split(&split, range, ',', 50);
+      if(dim != 2){
+        return false;
+      }
+      int low = getNumber(split[0]);
+      int high = getNumber(split[1]);
+      int i;
+
+      int start_s_idx = (*s_idx);
+
+      for (i = 0; i < high; i++){
+        if(!match_here(input, (*s_idx), curr)){
+          break;
+        }
+        (*s_idx)++;
+      }
+      if (i < low || i > high){
+        return false;
+      }
+      // printf("%d %d %d\n",low, high, i);
+      // printf("i:%d j:%d\n",(*s_idx), start_s_idx + low);
+      for(int i = (*s_idx); i >= start_s_idx + low; i--){
+        int temp_s_idx = i;
+        String slice = {.str = &input.str[i], .len = input.len - i};
+        
+        // printf("for\n");
+        if (match_regex(&regex[r_idx], size - r_idx, slice, &temp_s_idx)){
+          // printf("for\n");
+          (*s_idx) = i + temp_s_idx;
+          return true;
+        }
+      }
+      // printf("qui %c\n",input.str[(*s_idx)]);
+      return false;
     }
   }
   // return s_idx == input.len;
@@ -278,8 +336,12 @@ bool match_regex_anywhere(regex_e *regex, int size, String input) {
         s_idx++;
       }
       start += s_idx; // Avanza fino alla fine del match
-    } else {
-      start++; // Nessun match qui, avanza di uno
+    }else{
+      if (s_idx == 0) {
+        s_idx++;
+      }
+      start += s_idx; // Avanza fino alla fine del match
+      // printf("else\n");
     }
   }
 
@@ -498,3 +560,4 @@ String string_regex_op(regex_op r_op) {
   }
   return str_r_op;
 }
+
