@@ -335,12 +335,14 @@ bool match_regex_anywhere(regex_e *regex, int size, String input) {
       if (s_idx == 0) {
         s_idx++;
       }
-      start += s_idx; // Avanza fino alla fine del match
-    }else{
+      // Avanza fino alla fine del match
+      start += s_idx;
+      }else{
+        
       if (s_idx == 0) {
         s_idx++;
       }
-      start += s_idx; // Avanza fino alla fine del match
+      start += s_idx; 
       // printf("else\n");
     }
   }
@@ -516,6 +518,25 @@ int parse_regex(String regex, regex_e **list, int *size) {
     // }
   }
   return Ok;
+}
+
+bool sanitize_regex(regex_e *list, int size){
+
+  for(int i = 0; i < size; i++){
+    switch (list[i].r_op) {
+      case star:
+      case plus:
+      case question:
+        if(i + 1 < size){
+          if(list[i + 1].r_op == star || list[i + 1].r_op == plus ||list[i + 1].r_op == question){
+            return false; 
+          }
+        }
+      default:
+        break;
+    }
+  }
+  return true;
 }
 
 String string_regex_op(regex_op r_op) {

@@ -1,4 +1,5 @@
 #include "../include/rgx.h"
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -7,15 +8,17 @@ int main(int argc, char **argv) {
 
   String regex = str_init(argv[argc - 2], 100);
   String input = str_init(argv[argc - 1], 100);
-  int ret;
   int size = 0;
   regex_e *list = NULL;
   list = malloc(size * sizeof(regex_e));
   clock_t start,end;
   double time;
   start = clock();
-  ret = parse_regex(regex, &list, &size);
-  if (ret == Err) {
+  if (parse_regex(regex, &list, &size) == Err) {
+    return -1;
+  }
+  if(sanitize_regex(list, size) == false){
+    printf("Bad formulated regex\n");
     return -1;
   }
   end = clock();
