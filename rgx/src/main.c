@@ -6,60 +6,77 @@
 
 int count;
 
-void parse_opt(int argc, char **argv){
-  printf("%d\n",argc);
+int parse_opt(int argc, char **argv,String *regex,String *input,String *file){
+
+  
+  String *arg = malloc(argc * sizeof(String));
+  for (int i = 0; i < argc; i++) {
+      arg[i] = str_init(argv[i], 1064);
+  }
+    
+  int counter = 0;
+  
   for(int i = 0; i < argc; i++){
-    printf("%s\n",argv[i]);
+    if(str_cmpr(arg[i],"-f",5) == 0 && i + 1 < argc){
+      i++;
+      counter++;
+      (*file) = arg[i];
+    }else
+    if(str_cmpr(arg[i],"-r",5) == 0 && i + 1 < argc){
+      i++;
+      counter++;
+      (*regex) = arg[i];
+    }else
+    if(str_cmpr(arg[i],"-t",5) == 0 && i + 1 < argc){
+      i++;
+      counter++;
+      (*input) = arg[i];
+    }
   }
 
-  
-
-  
+  if (counter < 2){
+    printf("Not enought parameters passed.\n");
+    printf("Usage:\n\trgx -r [regex] -f [filename]\n");
+    printf("Or:\n\trgx -r [regex] -t [text]\n");
+    return -1;
+  }
+  if ((*regex).len == 0){
+    printf("No regex given\n");
+    printf("Usage:\n\trgx -r [regex] -f [filename]\n");
+    printf("Or:\n\trgx -r [regex] -t [text]\n");
+    return -1;
+  }
+  if((*file).len != 0 && (*input).len != 0){
+    printf("A name file and a text where inserted to match\nChose one:\n1) File\n2) Text\n-> ");
+    int n = 0;
+    while(1){
+      scanf("%d",&n);
+      if(n == 1){
+        str_reset(&(*input));
+        break;
+      }else
+      if(n == 2){
+        str_reset(&(*file));
+        break;
+      }else{
+        printf("Not a valid choise\n-> ");
+      }
+    }
+  }
+  return 0;
 }
 
 
 int main(int argc, char **argv) {
 
   count = 0;
-
-  
-
-  parse_opt(argc, &argv[1]);
-  return 1;
-  
-  String *arg = malloc(argc * sizeof(String));
-  for(int i = 1; i < argc; i++){
-    arg[i-1] = str_init(argv[i], 1064);
-  }
   String regex = str_init("", 0);
   String input = str_init("", 0);
   String file = str_init("", 0);
-  for(int i = 0; i < argc - 1; i++){
-    if(str_cmpr(arg[i], "-f", 3) == 0 && i + 1 < argc - 1){
-      // printf("qui\n");
-      i++;
-      file = arg[i];
-    }else if (str_cmpr(arg[i], "-r", 3) == 0 && i + 1 < argc - 1) {
-      i++;
-      regex = arg[i];
-    }else{
-      if (regex.len == 0){
-        regex = arg[i];
-      }else if (input.len == 0){
-        input = arg[i];
-      }
-    }
+  if(parse_opt(argc - 1, &argv[1], &regex, &input, &file) == -1){
+    return 1;
   }
-
-  // return -1;
-
-
-  // printf("%s\n",regex.str);
-  // printf("%s\n",input.str);
-  // printf("%s\n",file.str);
-
-  // regex = str_init(argv[argc - 2], 100);
-  // input = str_init(argv[argc - 1], 100);
+  
   int size = 0;
   regex_e *list = NULL;
   list = malloc(size * sizeof(regex_e));
@@ -86,7 +103,7 @@ int main(int argc, char **argv) {
 
     FILE *fp = fopen(file.str, "r");  // Apri il file in modalità lettura
     if (fp == NULL) {
-        perror("Errore nell'apertura del file");
+        perror("Error opening file");
         return 1;
     }
 
