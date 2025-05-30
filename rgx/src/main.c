@@ -33,6 +33,11 @@ int parse_opt(int argc, char **argv,String *regex,String *input,String *file){
       (*input) = arg[i];
     }
   }
+  if (argc == 2 && (*input).len == 0 && (*regex).len == 0 && (*file).len == 0){
+    (*regex) = arg[0];
+    (*input) = arg[1];
+    return 0;
+  }
 
   if (counter < 2){
     printf("Not enought parameters passed.\n");
