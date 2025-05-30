@@ -85,10 +85,10 @@ bool match_here(String input, int s_idx, regex_e re) {
       for (int j = start_r_idx; j < split[i].len; j++){
         char ccurr = split[i].str[j];
         char ctmp = ' ';
-        if (i + 1 < split[i].len) {
+        if (j + 1 < split[i].len) {
           ctmp = split[i].str[j+1];
         }
-        if (ctmp == '-') {
+        if (ctmp == '-' && j + 2 < split[i].len) {
           j += 2;
           ctmp = split[i].str[j];
 
@@ -258,25 +258,42 @@ bool match_regex(regex_e *regex, int size, String input, int *s_idx) {
 }
 void print_match(int start, int s_idx, String input) {
   // printf("Match\n");
-  printf("start:%d-s_idx:%d\n", start, s_idx);
-  printf("Match: %s\n", input.str);
-  printf("       ");
-  if (s_idx == 0) {
-    for (int i = 0; i < input.len; i++) {
-      printf("~");
+  // printf("start:%d-s_idx:%d\n", start, s_idx);
+
+  // bool color = false;
+  printf("Match: ");
+  for (int i = 0; i < input.len; i++) {
+    if (i == start) {
+      // Inizia evidenziazione
+      printf("\033[44;37m");
     }
-    printf("\n");
-  } else {
-    for (int i = 0; i < start; i++)
-      printf(" ");
-    for (int i = 0; i < s_idx; i++)
-      printf("~");
-    printf("\n");
+    printf("%c",input.str[i]);
+    if (i == s_idx + start - 1) {
+      // Termina evidenziazione
+      printf("\033[0m");
+    }
   }
+  printf("\033[0m");
+  printf("\n");
+
+  // printf("Match: %s\n", input.str);
+  // printf("       ");
+  // if (s_idx == 0) {
+  //   for (int i = 0; i < input.len; i++) {
+  //     printf("~");
+  //   }
+  //   printf("\n");
+  // } else {
+  //   for (int i = 0; i < start; i++)
+  //     printf(" ");
+  //   for (int i = 0; i < s_idx; i++)
+  //     printf("~");
+  //   printf("\n");
+  // }
 }
 bool match_regex_anywhere(regex_e *regex, int size, String input) {
   int start = 0;
-  int count = 0;
+  // int count = 0;
   int s_idx = 0;
   bool flagStart = false;
   bool flagEnd = false;
@@ -314,11 +331,11 @@ bool match_regex_anywhere(regex_e *regex, int size, String input) {
         print_match(start, s_idx, input);
         return true;
       } else {
-        printf("No match\n");
+        // printf("No match\n");
         return false;
       }
     } else {
-      printf("No match\n");
+      // printf("No match\n");
       return false;
     }
   }
@@ -351,7 +368,7 @@ bool match_regex_anywhere(regex_e *regex, int size, String input) {
     return true;
   }
 
-  printf("No match\n");
+  // printf("No match\n");
   return false;
 }
 

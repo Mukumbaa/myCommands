@@ -43,4 +43,5 @@ bool sanitize_regex(regex_e *list, int size);
 bool match_regex_anywhere(regex_e *regex, int size, String input);
 String string_regex_op(regex_op r_op);
 
+extern int count;
 #endif
