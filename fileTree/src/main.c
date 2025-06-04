@@ -16,8 +16,29 @@
 #endif
 
 #define MAX_PATH_LEN 1024
+int max_depth = -1;
+
+int getNumber(char *str)
+{
+    int number = 0.0;
+    int pos = 0;
+    if(str[pos] == '-'){
+      return -1;
+    }
+    while(str[pos] >= '0' && str[pos] <= '9')
+    {
+        number = number * 10 + str[pos] - '0';
+        pos++;
+    }
+    return number;
+}
 
 void fileTreeRec(const char *base_path, int depth) {
+
+    if(max_depth != -1 && depth > max_depth){
+        return;
+    }
+    
     DIR *dir;
     struct dirent *entry;
     struct stat statbuf;
@@ -30,7 +51,6 @@ void fileTreeRec(const char *base_path, int depth) {
     
     while ((entry = readdir(dir)) != NULL) {
         // skip "." end ".."
-        // if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0)
         if (entry->d_name[0] == '.'){
             continue;
         }
@@ -70,15 +90,16 @@ void fileTreeRec(const char *base_path, int depth) {
 
 int main(int argc, char **argv) {
 
-    argc = argc - 1;
     int flagDynamic = 0;
 
-    if(argc == 1){
+    if(argc == 3){
         if(strcmp(argv[1],"-d") == 0){
-            flagDynamic = 1;
+            max_depth = getNumber(argv[2]);
+            printf("depth: %d\n",max_depth);
+            // flagDynamic = 1;
         }
-    }else if(argc > 1){
-        printf("Too many arguments\nUsage: ftree [-d]\n");
+    }else if(argc > 3){
+        printf("Too many arguments\nUsage: ftree [-d num]\n");
         return 0;
     }
     // printf("%d\n", flagDynamic);
