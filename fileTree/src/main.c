@@ -1,18 +1,16 @@
 #include <stdio.h>
-#include <sys/stat.h>   // Per stat()
-#include <string.h>     // Per strcmp()
+#include <sys/stat.h>
+#include <string.h>
 #include <stdlib.h>
 
 #ifdef _WIN32
 #include <windows.h>
 #include "../include/dirent.h"
 #define CLEAR_SCREEN() system("cls")
-#define SLEEP_SECONDS(sec) Sleep((sec) * 1000)
 #else
 #include <dirent.h>
 #include <unistd.h>
 #define CLEAR_SCREEN() system("clear")
-#define SLEEP_SECONDS(sec) sleep(sec)
 #endif
 
 #define MAX_PATH_LEN 1024
@@ -48,16 +46,13 @@ void fileTreeRec(const char *base_path, int depth) {
         perror("opendir");
         return;
     }
-    
     while ((entry = readdir(dir)) != NULL) {
         // skip "." end ".."
         if (entry->d_name[0] == '.'){
             continue;
         }
-
         // build path
         snprintf(path, sizeof(path), "%s/%s", base_path, entry->d_name);
-
         if (stat(path, &statbuf) == -1) {
             perror("stat");
             continue;
@@ -74,7 +69,6 @@ void fileTreeRec(const char *base_path, int depth) {
         if(!(depth < 1)){
             printf("--");
         }
-
         if (S_ISDIR(statbuf.st_mode)) {
             // is a dir
             printf("%s/\n", entry->d_name);
@@ -90,32 +84,17 @@ void fileTreeRec(const char *base_path, int depth) {
 
 int main(int argc, char **argv) {
 
-    int flagDynamic = 0;
-
-    if(argc == 3){
-        if(strcmp(argv[1],"-d") == 0){
+    if(argc == 3 && strcmp(argv[1],"-d") == 0){
             max_depth = getNumber(argv[2]);
-            printf("depth: %d\n",max_depth);
-            // flagDynamic = 1;
-        }
-    }else if(argc > 3){
+    }else if(argc != 0){
         printf("Too many arguments\nUsage: ftree [-d num]\n");
         return 0;
     }
-    // printf("%d\n", flagDynamic);
 
-    if(flagDynamic){
-        
-        while (1) {
-            CLEAR_SCREEN();
-            fileTreeRec(".", 0);
-            SLEEP_SECONDS(2);
-        }
-    }else{
-        printf("\n");
-        fileTreeRec(".", 0);
-        printf("\n");
-    }
-    
+
+    printf("\n");
+    fileTreeRec(".", 0);
+    printf("\n");
+
     return 0;
 }
