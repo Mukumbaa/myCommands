@@ -86,12 +86,10 @@ int main(int argc, char **argv) {
 
     if(argc == 3 && strcmp(argv[1],"-d") == 0){
             max_depth = getNumber(argv[2]);
-    }else if(argc != 0){
+    }else if(argc != 1){
         printf("Too many arguments\nUsage: ftree [-d num]\n");
         return 0;
     }
-
-
     printf("\n");
     fileTreeRec(".", 0);
     printf("\n");
