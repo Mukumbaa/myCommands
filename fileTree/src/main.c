@@ -2,6 +2,7 @@
 #include <sys/stat.h>
 #include <string.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
 #ifdef _WIN32
 #include <windows.h>
@@ -14,7 +15,9 @@
 #endif
 
 #define MAX_PATH_LEN 1024
+
 int max_depth = -1;
+int flag_size = true;
 
 int getNumber(char *str)
 {
@@ -43,7 +46,7 @@ void fileTreeRec(const char *base_path, int depth) {
     char path[MAX_PATH_LEN];
 
     if ((dir = opendir(base_path)) == NULL) {
-        perror("opendir");
+        printf("Error in opendir\n");
         return;
     }
     while ((entry = readdir(dir)) != NULL) {
@@ -54,7 +57,7 @@ void fileTreeRec(const char *base_path, int depth) {
         // build path
         snprintf(path, sizeof(path), "%s/%s", base_path, entry->d_name);
         if (stat(path, &statbuf) == -1) {
-            perror("stat");
+            printf("Error in stat\n");
             continue;
         }
         // indentation
@@ -75,7 +78,10 @@ void fileTreeRec(const char *base_path, int depth) {
             fileTreeRec(path, depth + 1);
         } else {
             // is a file
-            printf("%s\n", entry->d_name);
+            printf("%s", entry->d_name);
+            if(flag_size == true){
+                printf(" (%ld bytes)\n",(long) statbuf.st_size);
+            }
         }
     }
     closedir(dir);
@@ -85,7 +91,7 @@ void fileTreeRec(const char *base_path, int depth) {
 int main(int argc, char **argv) {
 
     if(argc == 3 && strcmp(argv[1],"-d") == 0){
-            max_depth = getNumber(argv[2]);
+        max_depth = getNumber(argv[2]);
     }else if(argc != 1){
         printf("Too many arguments\nUsage: ftree [-d num]\n");
         return 0;
