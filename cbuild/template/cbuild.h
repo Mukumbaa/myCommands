@@ -49,7 +49,6 @@ static void recap(){
 }
 static void addFile(char *file_name){
   
-  // Alloca spazio per un nuovo puntatore
   char **temp = (char **) realloc(FILES, (numFiles + 1) * sizeof(char *));
   if (temp == NULL) {
       perror("Errore realloc");
@@ -58,7 +57,6 @@ static void addFile(char *file_name){
 
   FILES = temp;
 
-  // Copia il nome del file
   FILES[numFiles] = (char *) malloc(strlen(file_name) + 1);
   if (FILES[numFiles] == NULL) {
       perror("Errore malloc");
@@ -69,7 +67,6 @@ static void addFile(char *file_name){
   numFiles++;
 }
 static void addFlag(char *flag){
-  // Alloca spazio per un nuovo puntatore
   char **temp = (char **) realloc(FLAG, (numFlags + 1) * sizeof(char *));
   if (temp == NULL) {
       perror("Errore realloc");
@@ -77,8 +74,6 @@ static void addFlag(char *flag){
   }
 
   FLAG = temp;
-
-  // Copia il nome del file
   FLAG[numFlags] = (char *) malloc(strlen(flag) + 1);
   if (FLAG[numFlags] == NULL) {
       perror("Errore malloc");
@@ -90,7 +85,6 @@ static void addFlag(char *flag){
   
 }
 static void addLib(char *lib){
-  // Alloca spazio per un nuovo puntatore
   char **temp = (char **) realloc(LIB, (numLibs + 1) * sizeof(char *));
   if (temp == NULL) {
       perror("Errore realloc");
@@ -99,7 +93,6 @@ static void addLib(char *lib){
 
   LIB = temp;
 
-  // Copia il nome del file
   LIB[numLibs] = (char *) malloc(strlen(lib) + 1);
   if (LIB[numLibs] == NULL) {
       perror("Errore malloc");
@@ -111,19 +104,18 @@ static void addLib(char *lib){
   
 }
 static void build(){
-    // 1. Crea cartella obj/ se non esiste
+    // Create obj folder
     struct stat st = {0};
     if (stat("obj", &st) == -1) {
         system("mkdir obj");
         // mkdir("obj");
     }
 
-    // 2. Compila ogni file in obj/file.o
+    // Compile every .c file and put the .o file in the obj folder
     for (int i = 0; i < numFiles; i++) {
         char command[1064] = {0};
         char obj_path[256] = {0};
 
-        // Estrai nome base del file (es. "main.c" → "main.o")
         const char* src = FILES[i];
         const char* filename = strrchr(src, '/');
         filename = filename ? filename + 1 : src;
@@ -132,7 +124,6 @@ static void build(){
         char* dot = strrchr(obj_path, '.');
         if (dot) strcpy(dot, ".o");
 
-        // Costruisci comando
         snprintf(command, sizeof(command), "%s -c", CC ? CC : "gcc");
 
         for (int j = 0; j < numFlags; j++) {
@@ -146,11 +137,11 @@ static void build(){
         strncat(command, " -o ", sizeof(command) - strlen(command) - 1);
         strncat(command, obj_path, sizeof(command) - strlen(command) - 1);
 
-        printf("[Compilazione] %s\n", command);
+        printf("[Compiling] %s\n", command);
         system(command);
     }
 
-    // 3. Linka tutti i .o in "output"
+    // Linking
     char link_cmd[1024] = {0};
     snprintf(link_cmd, sizeof(link_cmd), "%s", CC ? CC : "gcc");
 
