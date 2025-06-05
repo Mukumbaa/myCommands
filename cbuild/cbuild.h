@@ -1,14 +1,15 @@
-#ifndef CB
-#define CB
+#ifndef CBUILD
+#define CBUILD
 
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <sys/stat.h>
 
-static char* CC = NULL;
-static char** FLAG = NULL;
-static char** LIB = NULL;
+static char *CC = NULL;
+static char *output = NULL;
+static char **FLAG = NULL;
+static char **LIB = NULL;
 static char **FILES = NULL;
 static char PARAM[256] = "\0";
 
@@ -119,7 +120,7 @@ static void build(){
 
     // 2. Compila ogni file in obj/file.o
     for (int i = 0; i < numFiles; i++) {
-        char command[512] = {0};
+        char command[1064] = {0};
         char obj_path[256] = {0};
 
         // Estrai nome base del file (es. "main.c" → "main.o")
@@ -177,21 +178,40 @@ static void build(){
         strncat(link_cmd, LIB[j], sizeof(link_cmd) - strlen(link_cmd) - 1);
     }
 
-    strncat(link_cmd, " -o output", sizeof(link_cmd) - strlen(link_cmd) - 1);
+    if(output == NULL){
+      strncat(link_cmd, " -o output", sizeof(link_cmd) - strlen(link_cmd) - 1);
+    }else{
+      strncat(link_cmd, " -o ", sizeof(link_cmd) - strlen(link_cmd) - 1);
+      strncat(link_cmd, output, sizeof(link_cmd) - strlen(link_cmd) - 1);
+    }
 
     printf("[Linking] %s\n", link_cmd);
     system(link_cmd);    
+}
+static void setOutputName(char *name){
+  output = name;
 }
 static void run(){
   printf("Run:\n");
   if (PARAM[0] != '\0'){
     char command[256];
-    snprintf(command, sizeof(command),"output.exe %s", PARAM);
+    if(output == NULL){
+      snprintf(command, sizeof(command),"output.exe %s", PARAM);
+    }else{
+      snprintf(command, sizeof(command),"%s.exe %s", output , PARAM);
+    }
     system(command);
     printf("\nEnd run.");
     return;
   }
-  system("output.exe");  
+
+  if(output == NULL){
+    system("output.exe");
+  }else{
+    char command[256];
+    snprintf(command, sizeof(command),"%s.exe", output);
+    system(command);  
+  }
   printf("\nEnd run.");
 }
 static void param(){
