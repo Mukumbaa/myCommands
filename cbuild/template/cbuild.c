@@ -1,22 +1,24 @@
 #include "cbuild.h"
 
-int main(int argc, char **argv){
+int main(){
 
   // Select your CC (supported only gcc for now)
   // setCC("gcc");
 
   // Add your files
-  // addFile("main.c");
+  // addFile("src/main.c");
 
   // Add your falgs
   // addFlag("-Wall -Wextra -Werror");
   
   // Add your libs
-  // addLib("-Llib -lmylib");
+  // addLib("-Llib -lstr_win");
 
   // To print the recap of your choises
   // recap();
 
+  // setOutputName("program");
+  
   // To build
   // build();
 
