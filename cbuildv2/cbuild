@@ -1,0 +1,7 @@
+CC:gcc
+file:main.c
+file:main3.c
+file:main2.c
+flags:-Wall
+libs:-Llib -lsrt_win
+param:ciao

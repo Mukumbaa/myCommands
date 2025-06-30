@@ -80,7 +80,7 @@ void fileTreeRec(const char *base_path, int depth) {
             // is a file
             printf("%s", entry->d_name);
             if(flag_size == true){
-                printf(" (%ld bytes)\n",(long) statbuf.st_size);
+                printf(" (%llu bytes)\n",(unsigned long long) statbuf.st_size);
             }
         }
     }

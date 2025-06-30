@@ -6,7 +6,7 @@
 #include <stdio.h>
 #include <sys/stat.h>
 
-static char *CC = NULL;
+static char *CC;
 static char *output = NULL;
 static char **FLAG = NULL;
 static char **LIB = NULL;
@@ -41,7 +41,7 @@ static void printLibs(){
   printf("\n");
 }
 static void recap(){
-  printf("CC: %s\n",CC);
+  printf("CC:\n\t%s\n",CC);
   printFiles();
   printFlags();
   printLibs();
@@ -192,7 +192,7 @@ static void run(){
       snprintf(command, sizeof(command),"%s.exe %s", output , PARAM);
     }
     system(command);
-    printf("\nEnd run.");
+    printf("\nEnd run.\n");
     return;
   }
 
@@ -203,7 +203,7 @@ static void run(){
     snprintf(command, sizeof(command),"%s.exe", output);
     system(command);  
   }
-  printf("\nEnd run.");
+  printf("\nEnd run.\b");
 }
 static void param(){
   printf("Inser param:\n");
