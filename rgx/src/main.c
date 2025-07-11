@@ -43,9 +43,16 @@ int parse_opt(int argc, char **argv,String *regex,String *input,String *file){
   }
 
   // if no flag are found, first param is regex, second is text
-  if (argc == 2 && (*input).len == 0 && (*regex).len == 0 && (*file).len == 0){
-    (*regex) = arg[0];
-    (*input) = arg[1];
+  if (/*argc == 2 &&*/ (*input).len == 0 && (*regex).len == 0 && (*file).len == 0){
+    if (argc == 2){
+      (*regex) = arg[0];
+      (*input) = arg[1];
+    }else if (argc == 1){
+      (*regex) = arg[0];
+      return -1;
+    }else{
+      return -1;
+    }
     return 0;
   }
 
