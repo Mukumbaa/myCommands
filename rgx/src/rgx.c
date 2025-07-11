@@ -121,7 +121,6 @@ bool match_here(String input, int s_idx, regex_e re) {
     for (int i = 0; i < size + offset; i++) {
         str_destroy(&split[i]);
     }
-    // printf("free\n");
     free(split);
     return validate_set;
   }

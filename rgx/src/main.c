@@ -50,17 +50,9 @@ int parse_opt(int argc, char **argv,String *regex,String *input,String *file){
   }
 
   if (counter < 2 || (*regex).len == 0){
-    // printf("Not enought parameters passed.\n");
-    // printf("Usage:\n\trgx -r [regex] -f [filename]\n");
-    // printf("Or:\n\trgx -r [regex] -t [text]\n");
     return -1;
   }
-  // if ((*regex).len == 0){
-  //   printf("No regex given\n");
-  //   printf("Usage:\n\trgx -r [regex] -f [filename]\n");
-  //   printf("Or:\n\trgx -r [regex] -t [text]\n");
-  //   return -1;
-  // }
+
   if((*file).len != 0 && (*input).len != 0){
     printf("A name file and a text where inserted to match\nChose one:\n1) File\n2) Text\n-> ");
     int n = 0;
@@ -100,6 +92,9 @@ int main(int argc, char **argv) {
       printf("Not enought parameters passed.\n");
       printf("Usage:\n\trgx -r [regex] -f [filename]\n");
       printf("Or:\n\trgx -r [regex] -t [text]\n");
+      str_destroy(&regex);
+      str_destroy(&input);
+      str_destroy(&file);
       return 1;
     }
   }
@@ -111,9 +106,23 @@ int main(int argc, char **argv) {
   double time;
   start = clock();
   if (parse_regex(regex, &list, &size) == Err) {
+    str_destroy(&regex);
+    str_destroy(&input);
+    str_destroy(&file);
+    for (int i = 0; i < size; i++) {
+        str_destroy(&list[i].str);
+    }
+    free(list);
     return -1;
   }
   if(sanitize_regex(list, size) == false){
+    str_destroy(&regex);
+    str_destroy(&input);
+    str_destroy(&file);
+    for (int i = 0; i < size; i++) {
+        str_destroy(&list[i].str);
+    }
+    free(list);
     printf("Bad formulated regex\n");
     return -1;
   }
@@ -131,6 +140,13 @@ int main(int argc, char **argv) {
     FILE *fp = fopen(file.str, "r");  // Apri il file in modalità lettura
     if (fp == NULL) {
         perror("Error opening file");
+        str_destroy(&regex);
+        str_destroy(&input);
+        str_destroy(&file);
+        for (int i = 0; i < size; i++) {
+            str_destroy(&list[i].str);
+        }
+        free(list);
         return 1;
     }
 
