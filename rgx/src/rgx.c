@@ -65,11 +65,6 @@ bool match_here(String input, int s_idx, regex_e re) {
       // split = &split[1];
       size--;
     }
-    // printf("SPLIT\n");
-    // for(int i = 0; i < size; i++){
-    //   printf("%s\n",split[i].str);
-    // }
-    // printf("FINESPLIT\n");
     bool validate_set = false;
     for (int i = 0; i < size + offset; i++){
       bool single_set;
