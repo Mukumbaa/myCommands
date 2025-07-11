@@ -3,6 +3,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#if defined(_WIN32) || defined(_WIN64)
+#include <io.h>
+#include <fcntl.h>
+#define isatty _isatty
+#define fileno _fileno
+#else
+#include <unistd.h>
+#endif
 
 int count;
 
@@ -33,24 +41,26 @@ int parse_opt(int argc, char **argv,String *regex,String *input,String *file){
       (*input) = arg[i];
     }
   }
+
+  // if no flag are found, first param is regex, second is text
   if (argc == 2 && (*input).len == 0 && (*regex).len == 0 && (*file).len == 0){
     (*regex) = arg[0];
     (*input) = arg[1];
     return 0;
   }
 
-  if (counter < 2){
-    printf("Not enought parameters passed.\n");
-    printf("Usage:\n\trgx -r [regex] -f [filename]\n");
-    printf("Or:\n\trgx -r [regex] -t [text]\n");
+  if (counter < 2 || (*regex).len == 0){
+    // printf("Not enought parameters passed.\n");
+    // printf("Usage:\n\trgx -r [regex] -f [filename]\n");
+    // printf("Or:\n\trgx -r [regex] -t [text]\n");
     return -1;
   }
-  if ((*regex).len == 0){
-    printf("No regex given\n");
-    printf("Usage:\n\trgx -r [regex] -f [filename]\n");
-    printf("Or:\n\trgx -r [regex] -t [text]\n");
-    return -1;
-  }
+  // if ((*regex).len == 0){
+  //   printf("No regex given\n");
+  //   printf("Usage:\n\trgx -r [regex] -f [filename]\n");
+  //   printf("Or:\n\trgx -r [regex] -t [text]\n");
+  //   return -1;
+  // }
   if((*file).len != 0 && (*input).len != 0){
     printf("A name file and a text where inserted to match\nChose one:\n1) File\n2) Text\n-> ");
     int n = 0;
@@ -68,6 +78,10 @@ int parse_opt(int argc, char **argv,String *regex,String *input,String *file){
       }
     }
   }
+  for (int i = 0; i < argc; i++) {
+      str_destroy(&arg[i]);
+  }
+  free(arg);
   return 0;
 }
 
@@ -75,11 +89,19 @@ int parse_opt(int argc, char **argv,String *regex,String *input,String *file){
 int main(int argc, char **argv) {
 
   count = 0;
+  int stdinPipe = false;
   String regex = str_init("", 0);
   String input = str_init("", 0);
   String file = str_init("", 0);
   if(parse_opt(argc - 1, &argv[1], &regex, &input, &file) == -1){
-    return 1;
+    if (regex.len != 0 && !isatty(fileno(stdin))){
+      stdinPipe = true;
+    }else{
+      printf("Not enought parameters passed.\n");
+      printf("Usage:\n\trgx -r [regex] -f [filename]\n");
+      printf("Or:\n\trgx -r [regex] -t [text]\n");
+      return 1;
+    }
   }
   
   int size = 0;
@@ -124,21 +146,34 @@ int main(int argc, char **argv) {
   }else if (input.len != 0){
     count = 0;
     match_regex_anywhere(list, size, input);
+  }else if (stdinPipe){
+    count = 0;
+    char buffer[1064];
+    while(fgets(buffer, 1064, stdin) != NULL){
+      input = str_init(buffer, 1064);
+      input.str[input.len - 1] = '\0';
+      match_regex_anywhere(list, size, input);
+    }
   }
   if (count == 0){
     printf("No match\n");
   }
-
-
-
-
-
-
-
-  
   end = clock();
   time = ((double) end - start) /CLOCKS_PER_SEC;
   // printf("%d\n", r);
   printf("match time: %f\n",time);
+
+
+  
+  str_destroy(&regex);
+  str_destroy(&input);
+  str_destroy(&file);
+  for (int i = 0; i < size; i++) {
+      str_destroy(&list[i].str);
+  }
+  free(list);
+
+  
+  
   return 0;
 }

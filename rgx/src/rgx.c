@@ -59,8 +59,10 @@ bool match_here(String input, int s_idx, regex_e re) {
         str_char(&split[0], re.str.str[i]);
       }
     }
+    int offset = 0;
     if(split[0].len == 0){
-      split = &split[1];
+      offset = 1;
+      // split = &split[1];
       size--;
     }
     // printf("SPLIT\n");
@@ -69,7 +71,7 @@ bool match_here(String input, int s_idx, regex_e re) {
     // }
     // printf("FINESPLIT\n");
     bool validate_set = false;
-    for (int i = 0; i < size; i++){
+    for (int i = 0; i < size + offset; i++){
       bool single_set;
       
       bool flag_inner_except = false;
@@ -116,6 +118,11 @@ bool match_here(String input, int s_idx, regex_e re) {
       } // second for
       validate_set = validate_set || single_set;
     } // first for
+    for (int i = 0; i < size + offset; i++) {
+        str_destroy(&split[i]);
+    }
+    // printf("free\n");
+    free(split);
     return validate_set;
   }
   

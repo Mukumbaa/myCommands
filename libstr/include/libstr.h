@@ -20,6 +20,7 @@ typedef struct{
 
 
 String str_init(const char *s, int max_len);
+void str_destroy(String *str);
 void str_reset(String *str);
 void str_resetr(char *str, int len);
 void str_cat(String *dest, const String src, int index);

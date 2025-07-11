@@ -18,6 +18,13 @@ String str_init(const char *s, int max_len){
 
   return str;  
 }
+void str_destroy(String *str) {
+    if (str->str != NULL) {
+        free(str->str);
+        str->str = NULL;
+        str->len = 0;
+    }
+}
 void str_reset(String *str){
   *str = str_init("",5);
 }
