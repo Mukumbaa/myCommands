@@ -12,6 +12,7 @@
 #include <unistd.h>
 #endif
 
+int _CRT_glob = 0;
 int count;
 
 int parse_opt(int argc, char **argv,String *regex,String *input,String *file){
@@ -77,10 +78,10 @@ int parse_opt(int argc, char **argv,String *regex,String *input,String *file){
       }
     }
   }
-  for (int i = 0; i < argc; i++) {
-      str_destroy(&arg[i]);
-  }
-  free(arg);
+  // for (int i = 0; i < argc; i++) {
+  //     str_destroy(&arg[i]);
+  // }
+  // free(arg);
   return 0;
 }
 
@@ -92,8 +93,13 @@ int main(int argc, char **argv) {
   String regex = str_init("", 0);
   String input = str_init("", 0);
   String file = str_init("", 0);
+
+  // for (int i = 0; i < argc; i++) {
+  //     printf("argv[%d]: %s\n", i, argv[i]);
+  // }
+    
   if(parse_opt(argc - 1, &argv[1], &regex, &input, &file) == -1){
-    if (regex.len != 0 && !isatty(fileno(stdin))){
+    if (regex.len != 0 && input.len == 0 && file.len == 0 && !isatty(fileno(stdin))){
       stdinPipe = true;
     }else{
       printf("Not enought parameters passed.\n");

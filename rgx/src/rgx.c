@@ -113,10 +113,10 @@ bool match_here(String input, int s_idx, regex_e re) {
       } // second for
       validate_set = validate_set || single_set;
     } // first for
-    for (int i = 0; i < size + offset; i++) {
-        str_destroy(&split[i]);
-    }
-    free(split);
+    // for (int i = 0; i < size + offset; i++) {
+    //     str_destroy(&split[i]);
+    // }
+    // free(split);
     return validate_set;
   }
   
