@@ -169,6 +169,7 @@ int main(int argc, char **argv) {
     while(fgets(buffer, 1064, fp) != NULL){
       input = str_init(buffer, 1064);
       input.str[input.len - 1] = '\0';
+      input.len = input.len - 1;
       match_regex_anywhere(list, size, input);
     }
 
@@ -181,6 +182,7 @@ int main(int argc, char **argv) {
     while(fgets(buffer, 1064, stdin) != NULL){
       input = str_init(buffer, 1064);
       input.str[input.len - 1] = '\0';
+      input.len = input.len - 1;
       match_regex_anywhere(list, size, input);
     }
   }
