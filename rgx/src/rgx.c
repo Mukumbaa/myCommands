@@ -113,10 +113,10 @@ bool match_here(String input, int s_idx, regex_e re) {
       } // second for
       validate_set = validate_set || single_set;
     } // first for
-    // for (int i = 0; i < size + offset; i++) {
-    //     str_destroy(&split[i]);
-    // }
-    // free(split);
+    for (int i = 0; i < size + offset; i++) {
+        str_destroy(&split[i]);
+    }
+    free(split);
     return validate_set;
   }
   
@@ -220,6 +220,11 @@ bool match_regex(regex_e *regex, int size, String input, int *s_idx) {
       String *split;
       int dim = str_split(&split, range, ',', 50);
       if(dim != 2){
+        for (int i = 0; i < dim; i++) {
+            str_destroy(&split[i]);
+        }
+        free(split);
+        str_destroy(&range);
         return false;
       }
       int low = getNumber(split[0]);
@@ -235,6 +240,11 @@ bool match_regex(regex_e *regex, int size, String input, int *s_idx) {
         (*s_idx)++;
       }
       if (i < low || i > high){
+        for (int i = 0; i < dim; i++) {
+            str_destroy(&split[i]);
+        }
+        free(split);
+        str_destroy(&range);
         return false;
       }
       // printf("%d %d %d\n",low, high, i);
@@ -247,9 +257,20 @@ bool match_regex(regex_e *regex, int size, String input, int *s_idx) {
         if (match_regex(&regex[r_idx], size - r_idx, slice, &temp_s_idx)){
           // printf("for\n");
           (*s_idx) = i + temp_s_idx;
+          for (int i = 0; i < dim; i++) {
+              str_destroy(&split[i]);
+          }
+          free(split);
+          str_destroy(&range);
           return true;
         }
       }
+      
+      for (int i = 0; i < dim; i++) {
+          str_destroy(&split[i]);
+      }
+      free(split);
+      str_destroy(&range);
       // printf("qui %c\n",input.str[(*s_idx)]);
       return false;
     }
@@ -380,7 +401,9 @@ int parse_regex(String regex, regex_e **list, int *size) {
   bool flag = false;
   int old_i = 0;
   for (int i = 0; i < regex.len; i++) {
-    str_reset(&buffer);
+    // str_reset(&buffer);
+    // str_destroy(&buffer);
+    buffer = str_init("",5);
     len = 0;
     switch (regex.str[i]) {
     case '^':
@@ -531,9 +554,11 @@ int parse_regex(String regex, regex_e **list, int *size) {
 
       (*size)++;
       (*list) = realloc((*list), (*size) * sizeof(regex_e));
+      (*list)[(*size) - 1].str = str_init("", 1);
       str_cpy(&(*list)[(*size) - 1].str, buffer);
       (*list)[(*size) - 1].r_op = r_op;
     // }
+    str_destroy(&buffer);
   }
   return Ok;
 }
@@ -557,46 +582,46 @@ bool sanitize_regex(regex_e *list, int size){
   return true;
 }
 
-String string_regex_op(regex_op r_op) {
-  String str_r_op;
-  switch (r_op) {
-  case 1:
-    str_r_op = str_init("star", 5);
-    break;
-  case 2:
-    str_r_op = str_init("question", 10);
-    break;
-  case 3:
-    str_r_op = str_init("plus", 5);
-    break;
-  case 4:
-    str_r_op = str_init("dot", 5);
-    break;
-  case 5:
-    str_r_op = str_init("start_str", 15);
-    break;
-  case 6:
-    str_r_op = str_init("end_str", 15);
-    break;
-  case 7:
-    str_r_op = str_init("set", 15);
-    break;
-  case 8:
-    str_r_op = str_init("group", 15);
-    break;
-  case 9:
-    str_r_op = str_init("alter", 15);
-    break;
-  case 10:
-    str_r_op = str_init("range", 15);
-    break;
-  case 11:
-    str_r_op = str_init("charr", 15);
-    break;
-  case 12:
-    str_r_op = str_init("escape", 15);
-    break;
-  }
-  return str_r_op;
-}
+// String string_regex_op(regex_op r_op) {
+//   String str_r_op;
+//   switch (r_op) {
+//   case 1:
+//     str_r_op = str_init("star", 5);
+//     break;
+//   case 2:
+//     str_r_op = str_init("question", 10);
+//     break;
+//   case 3:
+//     str_r_op = str_init("plus", 5);
+//     break;
+//   case 4:
+//     str_r_op = str_init("dot", 5);
+//     break;
+//   case 5:
+//     str_r_op = str_init("start_str", 15);
+//     break;
+//   case 6:
+//     str_r_op = str_init("end_str", 15);
+//     break;
+//   case 7:
+//     str_r_op = str_init("set", 15);
+//     break;
+//   case 8:
+//     str_r_op = str_init("group", 15);
+//     break;
+//   case 9:
+//     str_r_op = str_init("alter", 15);
+//     break;
+//   case 10:
+//     str_r_op = str_init("range", 15);
+//     break;
+//   case 11:
+//     str_r_op = str_init("charr", 15);
+//     break;
+//   case 12:
+//     str_r_op = str_init("escape", 15);
+//     break;
+//   }
+//   return str_r_op;
+// }
 

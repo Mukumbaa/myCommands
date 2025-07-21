@@ -18,6 +18,13 @@ String str_init(const char *s, int max_len){
 
   return str;  
 }
+String str_empty(){
+  String s;
+  s.str = NULL;
+  s.len = 0;
+  return s;  
+}
+
 void str_destroy(String *str) {
     if (str->str != NULL) {
         free(str->str);
@@ -26,6 +33,8 @@ void str_destroy(String *str) {
     }
 }
 void str_reset(String *str){
+  //NUOVO
+  str_destroy(str);
   *str = str_init("",5);
 }
 void str_resetr(char *str, int len){
@@ -33,61 +42,113 @@ void str_resetr(char *str, int len){
     str[i] = '\0';
   }
 }
-void str_cat(String *dest, const String src, int index){
+// void str_cat(String *dest, const String src, int index){
 
-  int new_len = dest->len + src.len;
-  dest->str = realloc(dest->str, (new_len + 1) * sizeof(char));
+//   int new_len = dest->len + src.len;
+//   dest->str = realloc(dest->str, (new_len + 1) * sizeof(char));
 
-  int i = 0;
-  int j = 0;
+//   int i = 0;
+//   int j = 0;
 
+//   if(index >= 0 && index <= dest->len){
+//     for(i = dest->len; i >= index && i < new_len; i--){
+//       dest->str[i + src.len] = dest->str[i];
+//     }
+//     for(i = 0; i < src.len && i < new_len; i++){
+//       dest->str[index + i] = src.str[i];
+//     }
+//     dest->str[new_len + 1] = '\0';
+//     dest->len = new_len;
+//   }else{
+//     for (i = dest->len, j = 0; i <= new_len && j <= src.len; i++, j++) {
+//       dest->str[i] = src.str[j];
+//     }
+//     dest->str[i] = '\0';
+//     dest->len = new_len;
+//   }
 
+//   return;
+// }
+void str_cat(String *dest, const String src, int index) {
+    if (!dest || !src.str || index < 0 || index > dest->len)
+        return;
 
-  if(index >= 0 && index <= dest->len){
-    for(i = dest->len; i >= index && i < new_len; i--){
-      dest->str[i + src.len] = dest->str[i];
+    int new_len = dest->len + src.len;
+    char *new_str = malloc((new_len + 1) * sizeof(char));
+    if (!new_str) return;
+
+    // Copia la parte prima dell'inserimento
+    for (int i = 0; i < index; i++) {
+        new_str[i] = dest->str[i];
     }
-    for(i = 0; i < src.len && i < new_len; i++){
-      dest->str[index + i] = src.str[i];
+
+    // Inserisci la stringa src
+    for (int i = 0; i < src.len; i++) {
+        new_str[index + i] = src.str[i];
     }
-    dest->str[new_len + 1] = '\0';
+
+    // Copia la parte dopo l'inserimento
+    for (int i = index; i < dest->len; i++) {
+        new_str[src.len + i] = dest->str[i];
+    }
+
+    // Terminatore
+    new_str[new_len] = '\0';
+
+    free(dest->str);
+    dest->str = new_str;
     dest->len = new_len;
-  }else{
-    for (i = dest->len, j = 0; i <= new_len && j <= src.len; i++, j++) {
-      dest->str[i] = src.str[j];
-    }
-    dest->str[i] = '\0';
-    dest->len = new_len;
-  }
-
-
-
-
-  
-  return;
 }
 
-void str_catr(String *dest, const char *src,  int max_len){
+// void str_catr(String *dest, const char *src,  int max_len){
 
-  int len = 0;
-  for(int i = 0; i < max_len && src[i] != '\0'; i++){
-    len++;
-  }
+//   int len = 0;
+//   for(int i = 0; i < max_len && src[i] != '\0'; i++){
+//     len++;
+//   }
   
-  int new_len = dest->len + len ;
-  dest->str = realloc(dest->str, (new_len + 1) * sizeof(char));
+//   int new_len = dest->len + len ;
+//   dest->str = realloc(dest->str, (new_len + 1) * sizeof(char));
 
-  int i = 0;
-  int j = 0;
+//   int i = 0;
+//   int j = 0;
   
-  for (i = dest->len, j = 0; i <= new_len && j <= len; i++, j++) {
-    dest->str[i] = src[j];
-  }
-  dest->str[i] = '\0';
-  dest->len = new_len;
-  return;
+//   for (i = dest->len, j = 0; i <= new_len && j <= len; i++, j++) {
+//     dest->str[i] = src[j];
+//   }
+//   dest->str[i] = '\0';
+//   dest->len = new_len;
+//   return;
+// }
+void str_catr(String *dest, const char *src, int max_len) {
+    if (!dest || !src) return;
+
+    // Calcola la lunghezza effettiva di src
+    int src_len = 0;
+    for (int i = 0; i < max_len && src[i] != '\0'; i++) {
+        src_len++;
+    }
+
+    int new_len = dest->len + src_len;
+    char *new_str = malloc((new_len + 1) * sizeof(char));
+    if (!new_str) return;
+
+    // Copia la stringa esistente
+    for (int i = 0; i < dest->len; i++) {
+        new_str[i] = dest->str[i];
+    }
+
+    // Copia src in fondo
+    for (int i = 0; i < src_len; i++) {
+        new_str[dest->len + i] = src[i];
+    }
+
+    new_str[new_len] = '\0';
+
+    free(dest->str);
+    dest->str = new_str;
+    dest->len = new_len;
 }
-
 // Return 0 if equale, else 1
 int str_cmp(String str1, String str2){
 
@@ -185,9 +246,9 @@ int str_split(String **arr, String str, char delimiter, int token_max_len){
   *arr = NULL;
   int dim = 0;
   int index = 0;
-  char *token = malloc(token_max_len * sizeof(char));
-  str_resetr(token, token_max_len);
-
+  // char *token = malloc(token_max_len * sizeof(char));
+  // str_resetr(token, token_max_len);
+  char *token = calloc(token_max_len, sizeof(char));
   
   
   for(int i = 0; i < str.len; i++){
@@ -215,6 +276,8 @@ int str_split(String **arr, String str, char delimiter, int token_max_len){
     (*arr)[dim - 1] = str_init(token, index + 1);
     str_resetr(token, token_max_len);
   }
+  //NUOVO
+  free(token);
   return dim;
 }
 int str_splitr(String **arr, char *str, char delimiter, int token_max_len, int max_len){
@@ -222,9 +285,10 @@ int str_splitr(String **arr, char *str, char delimiter, int token_max_len, int m
   *arr = NULL;
   int dim = 0;
   int index = 0;
-  char *token = malloc(token_max_len * sizeof(char));
-  str_resetr(token, token_max_len);
-
+  // char *token = malloc(token_max_len * sizeof(char));
+  // str_resetr(token, token_max_len);
+  // NUOVO
+  char *token = calloc(token_max_len, sizeof(char));
   int len = 0;
   for(int i = 0; i < max_len && str[i] != '\0'; i++){
     len++;
@@ -260,14 +324,20 @@ int str_splitr(String **arr, char *str, char delimiter, int token_max_len, int m
 
 }
 void str_cpy(String *dest, const String src){
-  
+  str_destroy(dest);
   *dest = str_init(src.str, src.len + 1);
   return;  
 }
+// void str_char(String *dest, char c){
+//   dest->str[dest->len] = c;
+//   dest->len++;
+//   dest->str = realloc(dest->str, (dest->len + 1) * sizeof(char));
+//   dest->str[dest->len] = '\0';
+// }
 void str_char(String *dest, char c){
+  dest->str = realloc(dest->str, (dest->len + 2) * sizeof(char)); // +1 per il nuovo char, +1 per '\0'
   dest->str[dest->len] = c;
   dest->len++;
-  dest->str = realloc(dest->str, (dest->len + 1) * sizeof(char));
   dest->str[dest->len] = '\0';
 }
 
