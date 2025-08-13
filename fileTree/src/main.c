@@ -90,14 +90,47 @@ void fileTreeRec(const char *base_path, int depth) {
 
 int main(int argc, char **argv) {
 
-    if(argc == 3 && strcmp(argv[1],"-d") == 0){
-        max_depth = getNumber(argv[2]);
-    }else if(argc != 1){
-        printf("Too many arguments\nUsage: ftree [-d num]\n");
-        return 0;
+    int index_path = -1;
+    bool custom_path = false;
+    
+    for (int i = 1; i < argc; i++){
+        if(strcmp(argv[i],"-d") == 0){
+            if (i + 1 < argc){
+                i++;
+                max_depth = getNumber(argv[i]);
+            }else{
+                printf("Give a number for -d option\n");
+                return -1;
+            }
+        }else if (strcmp(argv[i],"-p") == 0){
+            if (i + 1 < argc){
+                i++;
+                custom_path = true;
+                index_path = i;
+            }else{
+                printf("Give a path for -p option\n");
+                return -1;
+            }
+        }
     }
+
+
+
+
+
+    // if(argc == 3 && strcmp(argv[1],"-d") == 0){
+    //     max_depth = getNumber(argv[2]);
+    // }else if(argc != 1){
+    //     printf("Too many arguments\nUsage: ftree [-d num]\n");
+    //     return 0;
+    // }
     printf("\n");
-    fileTreeRec(".", 0);
+    if(custom_path == true){
+        printf("path: %s\n",argv[index_path]);
+        fileTreeRec(argv[index_path], 0);
+    }else{
+        fileTreeRec(".", 0);
+    }
     printf("\n");
 
     return 0;
