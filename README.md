@@ -176,3 +176,4 @@ Add the char given to the end of the string
 **Returns ->** (*void*)
 ___
 
+---
