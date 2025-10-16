@@ -17,7 +17,7 @@ else
 	RM = rm -f build/*.o
 	CLEAN_EXE = rm -f $(TARGET)$(SYS)$(EXE)
 	MKDIR = mkdir -p build
-	EXE = .out
+	EXE =
 endif
 
 all: $(TARGET)$(SYS)$(EXE)

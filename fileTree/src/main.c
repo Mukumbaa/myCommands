@@ -111,6 +111,9 @@ int main(int argc, char **argv) {
                 printf("Give a path for -p option\n");
                 return -1;
             }
+        }else{
+            custom_path = true;
+            index_path = i;
         }
     }
 
@@ -126,7 +129,7 @@ int main(int argc, char **argv) {
     // }
     printf("\n");
     if(custom_path == true){
-        printf("path: %s\n",argv[index_path]);
+        // printf("path: %s\n",argv[index_path]);
         fileTreeRec(argv[index_path], 0);
     }else{
         fileTreeRec(".", 0);
