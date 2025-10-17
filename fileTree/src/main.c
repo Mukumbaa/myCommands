@@ -17,7 +17,6 @@
 #define MAX_PATH_LEN 1024
 
 int max_depth = -1;
-int flag_size = true;
 
 int getNumber(char *str)
 {
@@ -78,9 +77,15 @@ void fileTreeRec(const char *base_path, int depth) {
             fileTreeRec(path, depth + 1);
         } else {
             // is a file
-            printf("%s", entry->d_name);
-            if(flag_size == true){
-                printf(" (%llu bytes)\n",(unsigned long long) statbuf.st_size);
+            printf("%s", entry->d_name); 
+            // printf(" (%llu bytes)\n",(unsigned long long) statbuf.st_size);
+            // printf(" bytes: %lu", statbuf.st_size);
+            if (statbuf.st_size >= 1000000000) { // ≥ 1 GB
+                printf(" [%.2LF GB]\n", (long double)(statbuf.st_size / 1000000000.0L));
+            } else if (statbuf.st_size >= 100000) { // ≥ 0.1 MB
+                printf(" [%.2LF MB]\n", (long double)(statbuf.st_size / 1000000.0L));
+            } else {
+                printf(" [%.2LF KB]\n", (long double)(statbuf.st_size / 1000.0L));
             }
         }
     }
