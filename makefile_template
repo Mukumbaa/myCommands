@@ -1,0 +1,62 @@
+# ==============================================================================
+# CONFIGURAZIONE COMPILATORE E FLAG
+# ==============================================================================
+CC       := gcc
+CFLAGS   := -Wall -Wextra -Iinclude
+LDFLAGS  := -Llib
+LDLIBS   :=
+
+# Nome dell'eseguibile finale
+TARGET   := build/app
+
+# ==============================================================================
+# DIRECTORY E FILE
+# ==============================================================================
+SRC_DIR   := src
+BUILD_DIR := build
+
+# Trova tutti i file .c nella cartella src/
+SRCS := $(wildcard $(SRC_DIR)/*.c)
+
+# Trasforma src/nome.c in build/nome.o
+OBJS := $(SRCS:$(SRC_DIR)/%.c=$(BUILD_DIR)/%.o)
+
+# File di dipendenza (.d) per intercettare le modifiche agli header (.h)
+DEPS := $(OBJS:.o=.d)
+
+# ==============================================================================
+# REGOLING / TARGETS
+# ==============================================================================
+.PHONY: all clean run
+
+# Default target
+all: $(TARGET)
+
+# Link dell'eseguibile finale
+$(TARGET): $(OBJS) | $(BUILD_DIR)
+	$(CC) $(OBJS) $(LDFLAGS) $(LDLIBS) -o $@
+
+# Compilazione dei singoli file .o con generazione automatica delle dipendenze
+$(BUILD_DIR)/%.o: $(SRC_DIR)/%.c | $(BUILD_DIR)
+	$(CC) $(CFLAGS) -MMD -MP -c $< -o $@
+
+# Crea la cartella build/ se non esiste
+$(BUILD_DIR):
+	mkdir -p $(BUILD_DIR)
+
+# Esegue l'applicazione
+run: $(TARGET)
+	./$(TARGET)
+
+# Pulizia dei file generati
+clean:
+	rm -rf $(BUILD_DIR)/*
+
+# Include i file di dipendenza autogenerati (ignora errori se non esistono ancora)
+-include $(DEPS)
+
+.PHONY: all clean run json
+
+# Genera compile_commands.json invocando Bear
+json: clean
+	bear -- $(MAKE) all
