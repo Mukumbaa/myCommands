@@ -55,9 +55,7 @@ static size_t get_next_capacity(size_t current, size_t needed) {
     return cap;
 }
 
-/* ========================================================================= */
-/*                          Init and destruction                             */
-/* ========================================================================= */
+//Init and destruction
 
 String str_empty(void) {
     String s;
@@ -150,9 +148,7 @@ void str_reset(String *str) {
     }
 }
 
-/* ========================================================================= */
-/*                        Edit and concat                                    */
-/* ========================================================================= */
+//Edit and concat
 
 bool str_reserve(String *str, size_t min_capacity) {
     if (!str) return false;
@@ -276,9 +272,7 @@ bool str_cpy(String *dest, const String *src) {
     return true;
 }
 
-/* ========================================================================= */
-/*                         Extract and remove                                */
-/* ========================================================================= */
+//Extract and remove
 
 String str_substr(const String *s, size_t start, size_t count) {
     if (!s || !s->str || start >= s->len || count == 0) {
@@ -347,9 +341,7 @@ bool str_replace(String *s, const char *old_sub, const char *new_sub) {
     return true;
 }
 
-/* ========================================================================= */
-/*                        cleanup and transformation                         */
-/* ========================================================================= */
+//cleanup and transformation
 
 void str_ltrim(String *s) {
     if (!s || !s->str || s->len == 0) return;
@@ -411,9 +403,7 @@ void str_reverse(String *s) {
     }
 }
 
-/* ========================================================================= */
-/*                           cmp and query                                   */
-/* ========================================================================= */
+//cmp and query
 
 int str_cmp(const String *str1, const String *str2) {
     if (!str1 || !str2) return (str1 == str2) ? 0 : (str1 ? 1 : -1);
@@ -449,6 +439,20 @@ bool str_equals(const String *str1, const String *str2) {
     if (!str1 || !str2) return false;
     if (str1->len != str2->len) return false;
     return raw_compare(str1->str, str2->str, str1->len) == 0;
+}
+
+bool str_equalsr(const String *str1, const char *str2) {
+    if (!str1 || !str1->str || !str2) return false;
+
+    size_t i = 0;
+    while (i < str1->len && str2[i] != '\0') {
+        if (str1->str[i] != str2[i]) {
+            return false;
+        }
+        i++;
+    }
+
+    return (i == str1->len && str2[i] == '\0');
 }
 
 bool str_is_empty(const String *s) {
@@ -534,9 +538,7 @@ ptrdiff_t str_find_last(const String *str, const char *pattern, int is_case_sens
     return -1;
 }
 
-/* ========================================================================= */
-/*                           split and join                                  */
-/* ========================================================================= */
+//split and join
 
 int str_split(String **arr, const String *str, char delimiter) {
   if (!arr || !str || !str->str) return -1;
